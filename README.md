@@ -1,5 +1,9 @@
 # FETH Overlay
 
+> [!NOTE]
+> Based on [feth-overlays](https://github.com/3096/feth-overlays) by
+> [3096](https://github.com/3096), with contributions from Jacien.
+
 [![build](https://github.com/jinghaihan/feth-overlay/actions/workflows/build.yml/badge.svg)](https://github.com/jinghaihan/feth-overlay/actions/workflows/build.yml)
 
 An in-game overlay for Fire Emblem: Three Houses v1.2.0. Item, class, and
