@@ -151,6 +151,115 @@ void refillItemDurability() {
   }
 }
 
+namespace {
+template <typename T> T read_game(std::size_t offset) {
+  T value{};
+  TRY_THROW(dmntchtReadCheatProcessMemory(
+    s_processMetadata.main_nso_extents.base + offset, &value, sizeof(value)
+  ));
+  return value;
+}
+
+template <typename T> void write_game(std::size_t offset, const T& value) {
+  TRY_THROW(dmntchtWriteCheatProcessMemory(
+    s_processMetadata.main_nso_extents.base + offset, &value, sizeof(value)
+  ));
+}
+}  // namespace
+
+BattalionArray getBattalions() {
+  TRY_THROW(!gameIsRunning());
+  return read_game<BattalionArray>(BATTALION_OFFSET);
+}
+
+Battalion getBattalion(std::size_t index) {
+  TRY_THROW(!gameIsRunning());
+  auto battalion =
+    read_game<Battalion>(BATTALION_OFFSET + index * sizeof(Battalion));
+  if (battalion.characterId >= 0) {
+    const auto roster = read_game<RosterCharacterArray>(ROSTER_OFFSET);
+    for (const auto& character : roster) {
+      if (
+        character.id == battalion.characterId &&
+        character.equippedBattalion.type == battalion.type
+      ) {
+        // Active battles can update the equipped copy first.
+        battalion.exp = character.equippedBattalion.exp;
+        battalion.stamina = character.equippedBattalion.stamina;
+        break;
+      }
+    }
+  }
+  return battalion;
+}
+
+void setBattalion(std::size_t index, Battalion battalion) {
+  if (!gameIsRunning())
+    return;
+  const auto offset = BATTALION_OFFSET + index * sizeof(Battalion);
+  const auto original = read_game<Battalion>(offset);
+  if (original.characterId >= 0) {
+    const auto roster = read_game<RosterCharacterArray>(ROSTER_OFFSET);
+    for (std::size_t slot = 0; slot < roster.size(); ++slot) {
+      if (
+        roster[slot].id == original.characterId &&
+        roster[slot].equippedBattalion.type == original.type
+      ) {
+        write_game(
+          ROSTER_OFFSET + slot * sizeof(Character) +
+            offsetof(Character, equippedBattalion),
+          battalion
+        );
+        break;
+      }
+    }
+  }
+  write_game(offset, battalion);
+}
+
+void refillBattalionStamina() {
+  if (!gameIsRunning())
+    return;
+  auto battalions = read_game<BattalionArray>(BATTALION_OFFSET);
+  const auto original = battalions;
+  refill_battalions(battalions);
+  for (std::size_t index = 0; index < battalions.size(); ++index) {
+    if (battalions[index] != original[index])
+      write_game(
+        BATTALION_OFFSET + index * sizeof(Battalion), battalions[index]
+      );
+  }
+
+  const auto roster = read_game<RosterCharacterArray>(ROSTER_OFFSET);
+  for (std::size_t index = 0; index < roster.size(); ++index) {
+    auto battalion = roster[index].equippedBattalion;
+    if (
+      UNIT_ID_NAME_MAP.contains(roster[index].id) &&
+      refill_battalions(std::span(&battalion, 1))
+    ) {
+      write_game(
+        ROSTER_OFFSET + index * sizeof(Character) +
+          offsetof(Character, equippedBattalion),
+        battalion
+      );
+    }
+  }
+}
+
+void addMissingBattalions() {
+  if (!gameIsRunning())
+    return;
+  auto battalions = read_game<BattalionArray>(BATTALION_OFFSET);
+  const auto original = battalions;
+  add_missing_battalions(battalions);
+  for (std::size_t index = 0; index < battalions.size(); ++index) {
+    if (battalions[index] != original[index])
+      write_game(
+        BATTALION_OFFSET + index * sizeof(Battalion), battalions[index]
+      );
+  }
+}
+
 std::list<core::RosterEntry> getRosterEntries() {
   TRY_THROW(!gameIsRunning());
 

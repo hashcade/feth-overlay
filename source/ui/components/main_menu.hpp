@@ -36,9 +36,12 @@ protected:
       submenu_item<ClassEditGui>(model_, text(model_, "Class Edit"));
     support_menu_ =
       submenu_item<SupportGui>(model_, text(model_, "Support Edit"));
+    battalion_menu_ =
+      submenu_item<BattalionEditGui>(model_, text(model_, "Battalion Edit"));
     list->addItem(item_menu_);
     list->addItem(class_menu_);
     list->addItem(support_menu_);
+    list->addItem(battalion_menu_);
   }
 
 private:
@@ -48,11 +51,13 @@ private:
     item_menu_->setText(text(model_, "Item Trainer"));
     class_menu_->setText(text(model_, "Class Edit"));
     support_menu_->setText(text(model_, "Support Edit"));
+    battalion_menu_->setText(text(model_, "Battalion Edit"));
   }
 
   tsl::elm::ListItem* language_item_{};
   tsl::elm::ListItem* item_menu_{};
   tsl::elm::ListItem* class_menu_{};
   tsl::elm::ListItem* support_menu_{};
+  tsl::elm::ListItem* battalion_menu_{};
   std::chrono::steady_clock::time_point last_refresh_{};
 };

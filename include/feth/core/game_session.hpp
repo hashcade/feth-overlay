@@ -17,6 +17,11 @@ bool gameIsRunning();
 Locale detect_locale();
 void setItemsWithIdSet(const ItemEditOptions& options);
 void refillItemDurability();
+BattalionArray getBattalions();
+Battalion getBattalion(std::size_t index);
+void setBattalion(std::size_t index, Battalion battalion);
+void refillBattalionStamina();
+void addMissingBattalions();
 std::list<core::RosterEntry> getRosterEntries();
 core::ClassUnlocks getRosterCharacterClassUnlockAtIndex(std::size_t index);
 void setClassUnlockAtIndexOfRosterCharacterAtIndex(

@@ -3,6 +3,8 @@
 
 #pragma once
 
+#include "feth/core/battalions.hpp"
+
 #include <array>
 #include <bitset>
 #include <cstdint>
@@ -31,7 +33,6 @@ static constexpr auto MAX_ITEM_DURABILITY = ItemDurability{100};
 static constexpr auto MAX_ITEM_AMOUNT = ItemAmount{99};
 
 // roster
-using Battalion = uint64_t;
 using RngValue = uint32_t;
 using CharacterId = uint16_t;
 using CharacterExp = uint16_t;
