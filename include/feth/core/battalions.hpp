@@ -19,7 +19,8 @@ struct Battalion {
 };
 static_assert(sizeof(Battalion) == 8);
 using BattalionArray = std::array<Battalion, 200>;
-constexpr std::uint16_t MAX_BATTALION_EXP = 400;
+constexpr int MAX_BATTALION_LEVEL = 5;
+constexpr int BATTALION_EXP_PER_LEVEL = 100;
 constexpr std::uint8_t EMPTY_BATTALION_TYPE = 200;
 
 struct BattalionTemplate {
@@ -30,5 +31,8 @@ struct BattalionTemplate {
 std::span<const BattalionTemplate> battalion_templates();
 const BattalionTemplate* battalion_template(std::uint8_t type);
 std::string battalion_name(std::uint8_t type, Locale locale);
+int battalion_level(std::uint16_t experience);
+void set_battalion_level(Battalion& battalion, int level);
+void change_battalion_type(Battalion& battalion, std::uint8_t type);
 std::size_t refill_battalions(std::span<Battalion> battalions);
 }  // namespace feth::core

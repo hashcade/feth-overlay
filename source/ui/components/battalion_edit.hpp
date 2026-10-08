@@ -17,9 +17,7 @@ protected:
       item->setClickListener([this, entry](u64 keys) {
         if (!(keys & HidNpadButton_A))
           return false;
-        battalion_.type = entry.type;
-        battalion_.skill = entry.skill;
-        battalion_.stamina = entry.stamina;
+        core::change_battalion_type(battalion_, entry.type);
         tsl::goBack();
         return true;
       });
@@ -52,7 +50,7 @@ protected:
   void populate(tsl::elm::List* list) override {
     battalion_ = game::getBattalion(index_);
     shown_type_ = battalion_.type;
-    exp_ = battalion_.exp;
+    level_ = core::battalion_level(battalion_.exp);
     stamina_ = battalion_.stamina;
     type_item_ = new tsl::elm::ListItem(text(model_, "Battalion Type"));
     type_item_->setValue(
@@ -66,34 +64,36 @@ protected:
     });
     list->addItem(type_item_);
     list->addItem(numeric_item(
-      text(model_, "Experience"), exp_, {0, core::MAX_BATTALION_EXP, 100}
+      text(model_, "Level"), level_, {1, core::MAX_BATTALION_LEVEL, 1}
     ));
     stamina_item_ = numeric_item(
-      text(model_, "Endurance"), stamina_, {0, maximum_stamina(), 10}
+      text(model_, "Current Endurance"), stamina_, {0, maximum_stamina(), 10}
     );
     list->addItem(stamina_item_);
     list->addItem(action_item(model_, text(model_, "Refill Endurance"), [this] {
       stamina_ = maximum_stamina();
       stamina_item_->setMaximum(maximum_stamina());
-      battalion_.stamina = stamina_;
-      battalion_.exp = exp_;
-      game::setBattalion(index_, battalion_);
+      apply();
     }));
     list->addItem(action_item(model_, text(model_, "Apply Battalion"), [this] {
-      battalion_.stamina = stamina_;
-      battalion_.exp = exp_;
-      game::setBattalion(index_, battalion_);
+      apply();
     }));
   }
 
 private:
+  void apply() {
+    battalion_.stamina = stamina_;
+    core::set_battalion_level(battalion_, level_);
+    game::setBattalion(index_, battalion_);
+  }
+
   int maximum_stamina() const {
     const auto* entry = core::battalion_template(battalion_.type);
     return entry ? entry->stamina : std::numeric_limits<std::uint16_t>::max();
   }
   std::size_t index_;
   core::Battalion battalion_{};
-  int exp_{};
+  int level_{};
   int stamina_{};
   std::uint8_t shown_type_{};
   tsl::elm::ListItem* type_item_{};

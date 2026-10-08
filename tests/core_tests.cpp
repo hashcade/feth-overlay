@@ -51,6 +51,28 @@ int main() {
   assert((battalions[0] == Battalion{3, 120, 30, 0, 4}));
   assert(battalions[1].stamina == 7);
   assert(refill_battalions(battalions) == 0);
+  assert(battalion_level(0) == 1 && battalion_level(99) == 1);
+  assert(battalion_level(100) == 2 && battalion_level(399) == 4);
+  assert(battalion_level(400) == 5);
+  Battalion leveled{3, 120, 30, 0, 4};
+  set_battalion_level(leveled, 2);
+  assert(leveled.exp == 120);  // An unchanged level preserves progress.
+  for (int level = 1; level <= 5; ++level) {
+    set_battalion_level(leveled, level);
+    assert(battalion_level(leveled.exp) == level);
+    assert(leveled.stamina == 30 && leveled.type == 0 && leveled.skill == 4);
+  }
+  auto changed_type = battalions[0];
+  change_battalion_type(changed_type, 70);
+  assert((changed_type == Battalion{3, 120, 120, 70, 29}));
+  assert(battalion_level(changed_type.exp) == 2);
+  changed_type.skill =
+    0;  // A custom gambit remains when the type is unchanged.
+  changed_type.stamina = 1;
+  change_battalion_type(changed_type, 70);
+  assert(changed_type.skill == 0 && changed_type.stamina == 1);
+  change_battalion_type(changed_type, 0);
+  assert(changed_type.skill == 4 && changed_type.stamina == 30);
   ItemArray items{};
   items[0] = {1000, 10, 1};
   items[1] = {1001, 20, 2};

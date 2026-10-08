@@ -21,7 +21,7 @@ Your language choice is remembered between sessions.
 | Class Unlocks | Toggle unlocked classes for each roster character. |
 | Ability Learning | Learn or forget abilities for each roster character. |
 | Support Edit | Edit support points between characters. |
-| Battalion Edit | Edit owned battalions and refill their endurance. |
+| Battalion Edit | Edit type, level, and current endurance for owned battalions. |
 
 Quick edits affect owned items by default, set amounts to 99, and leave
 existing durability unchanged. Enable **Add Missing Items** or **Normal
@@ -29,8 +29,10 @@ Durability** when needed. New items use their normal maximum durability.
 **Refill All Durability** restores Convoy and character-held items to their
 individual maximums. Unknown item IDs are left unchanged.
 
-Battalion edits also update the equipped copy. **Refill All Battalions** restores
-known types in the barracks and on characters.
+Changing a battalion's type assigns its default gambit and restores its full
+endurance. Level can be adjusted from 1 to 5. Changing only type or endurance
+preserves experience progress. Battalion edits also update the equipped copy.
+**Refill All Battalions** restores known types in the barracks and on characters.
 
 Toggle **Learned / Not Learned** to learn or forget an ability. Equip abilities
 from the game's own menus. Some DLC abilities are not included yet.
