@@ -24,6 +24,25 @@ int main() {
   assert(worn[2].durability == 7);
   assert(refill_items(worn) == 0);
 
+  LearnedAbilities abilities{};
+  for (const auto id : {0, 7, 8, 239})
+    set_ability_learned(abilities, id, true);
+  assert(abilities[0] == 0x81 && abilities[1] == 1);
+  assert(abilities.back() == 0x80);
+  assert(!ability_is_learned(abilities, 240));
+  set_ability_learned(abilities, 8, false);
+  assert(abilities[1] == 0);
+  assert(ability_is_learned(abilities, 0) && ability_is_learned(abilities, 7));
+  const auto unchanged = abilities;
+  set_ability_learned(abilities, 250, true);
+  assert(abilities == unchanged);
+  for (const auto id : ability_ids()) {
+    assert(id < LEARNED_ABILITY_COUNT);
+    for (const auto locale :
+         {Locale::English, Locale::SimplifiedChinese, Locale::Japanese})
+      assert(!ability_name(id, locale).empty());
+  }
+
   BattalionArray battalions{};
   battalions.fill({-1, 0, 0, EMPTY_BATTALION_TYPE, 80});
   battalions[0] = {3, 120, 1, 0, 4};

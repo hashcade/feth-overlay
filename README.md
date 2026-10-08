@@ -6,8 +6,8 @@
 
 [![build](https://github.com/jinghaihan/feth-overlay/actions/workflows/build.yml/badge.svg)](https://github.com/jinghaihan/feth-overlay/actions/workflows/build.yml)
 
-An in-game overlay for Fire Emblem: Three Houses v1.2.0. Item, class, and
-support and battalion editing are available from a single menu.
+An in-game overlay for Fire Emblem: Three Houses v1.2.0. Edit items, classes,
+abilities, support points, and battalions from a single menu.
 
 English, Simplified Chinese, and Japanese are supported. The language follows
 your console by default; choose **Language** in the main menu to override it.
@@ -18,7 +18,8 @@ Your language choice is remembered between sessions.
 | Menu | Features |
 | --- | --- |
 | Item Trainer | Add or edit Convoy items, adjust owned items by category, or refill Convoy and carried-item durability. |
-| Class Edit | Toggle unlocked classes for each roster character. |
+| Class Unlocks | Toggle unlocked classes for each roster character. |
+| Ability Edit | Add or remove learned abilities for each roster character. |
 | Support Edit | Edit support points between characters. |
 | Battalion Edit | Edit type, experience, and endurance; refill all battalions or add missing obtainable battalions. |
 
@@ -32,6 +33,9 @@ Battalion edits also update the equipped copy. **Add Missing Battalions** adds
 one of each missing obtainable type at level 5 with full endurance, using free
 slots and preserving existing battalions. **Refill All Battalions** restores known
 types in the barracks and on characters.
+
+Ability edits add or remove learned abilities. Equip them from the game's
+own menus. Some DLC abilities are not included yet.
 
 See the [item ID list](docs/feth_item_ids.txt) when adding a specific item.
 Changes affect the running game; save in-game to keep them.
@@ -82,7 +86,7 @@ is loaded. They reset when it is unloaded.
   project organization, shared menu styling, numeric controls, and automatic
   language detection.
 - [jinghaihan/feth-save-editor](https://github.com/jinghaihan/feth-save-editor):
-  the English, Simplified Chinese, and Japanese item, class, and character names
+  the English, Simplified Chinese, and Japanese game names
   exported from its game database, originally provided by imouto1994 and Falo.
 - [WerWolv/libtesla](https://github.com/WerWolv/libtesla): the original Tesla
   UI runtime.

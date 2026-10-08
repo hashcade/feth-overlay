@@ -56,7 +56,7 @@ private:
 class ClassEditGui final : public MenuGui {
 public:
   explicit ClassEditGui(Model& model)
-    : MenuGui(model, "Class Edit") {}
+    : MenuGui(model, "Class Unlocks") {}
 
 protected:
   void populate(tsl::elm::List* list) override {

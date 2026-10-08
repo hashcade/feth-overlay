@@ -35,8 +35,10 @@ docker run --rm -v "$PWD:/work" -w /work devkitpro/devkita64:latest make -j2
 make -f Makefile.host test
 ```
 
-Host checks cover item editing, class flag lookup, and support grouping. A
-successful build does not verify menu behavior or memory edits on hardware.
+Host checks cover item editing and normal durability, class flag lookup,
+ability flags, battalion refill and insertion, and support grouping. Layout
+assertions check the character size and edited field offsets. A successful
+build does not verify menu behavior or memory edits on hardware.
 
 ## Localization
 
@@ -51,7 +53,10 @@ the save editor's existing CLI, preserving its ID mappings and translations:
 
 ```sh
 python3 scripts/export_names.py ../feth-save-editor
-clang-format -i source/generated/names.cpp
+python3 scripts/export_item_data.py ../feth-save-editor
+python3 scripts/export_battalions.py ../feth-save-editor
+python3 scripts/export_abilities.py ../feth-save-editor
+clang-format -i source/generated/*.cpp
 make -f Makefile.host test
 ```
 
@@ -61,6 +66,23 @@ embeds the names so installation still needs only one OVL. Game text retains
 its original authorship and is not covered by the MIT license for new code.
 Host checks cover language mapping, overrides, persistent mode values, and
 name lookup for every class and item category used by the overlay.
+
+## Game data
+
+The memory profile targets only the v1.2.0 build ID. Item durability comes from
+the save editor's `fixed_data.bin.gz`; obtainable battalion templates come
+from its `ObtainableBattalions.cs`. Re-export these catalogs when updating
+that data rather than editing generated C++ files.
+
+Ability learning flags occupy 30 bytes at character offset `0x61`, with one
+bit per ID from 0 to 239. The UI excludes placeholder names. DLC abilities
+outside that mapped range need their learning flag locations confirmed
+before they can be added. No equipment editing is exposed.
+
+The battalion inventory is 200 eight-byte records. Its offset is derived
+from the existing support offset: the inventory and four uint32 fields
+immediately precede support values in `Player_V23`. Battalion edits also
+update a character's equipped copy when its character ID and type match.
 
 ## Releases
 

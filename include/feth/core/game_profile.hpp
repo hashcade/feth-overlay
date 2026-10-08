@@ -3,6 +3,7 @@
 
 #pragma once
 
+#include "feth/core/abilities.hpp"
 #include "feth/core/types.hpp"
 #include <cstddef>
 
@@ -24,8 +25,9 @@ struct __attribute__((__packed__)) Character {
   std::array<ItemId, CHARACTER_EQUIPPED_ITEM_COUNT> equippedItems;
   std::array<CharacterExp, CHARACTER_SKILL_COUNT> skillExps;
 
-  // I gave up mapping the whole thing here
-  std::array<uint8_t, 0x8B> padding0;
+  std::array<uint8_t, 0x19> padding0;
+  LearnedAbilities abilities;
+  std::array<uint8_t, 0x54> paddingAbilities;
   ClassUnlockData classUnlocks;
   std::array<uint8_t, 8> padding1;
   ClassUnlockData specialClassUnlocks;
@@ -33,6 +35,7 @@ struct __attribute__((__packed__)) Character {
 };
 static_assert(sizeof(Character) == 0x24C);
 static_assert(offsetof(Character, equippedBattalion) == 0x18);
+static_assert(offsetof(Character, abilities) == 0x61);
 static_assert(offsetof(Character, classUnlocks) == 0xD3);
 using RosterCharacterArray = std::array<Character, ROSTER_CHARACTER_COUNT>;
 

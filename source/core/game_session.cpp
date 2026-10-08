@@ -260,6 +260,25 @@ void addMissingBattalions() {
   }
 }
 
+LearnedAbilities getCharacterAbilities(std::size_t index) {
+  TRY_THROW(!gameIsRunning());
+  return read_game<LearnedAbilities>(
+    ROSTER_OFFSET + index * sizeof(Character) + offsetof(Character, abilities)
+  );
+}
+
+void setCharacterAbilityLearned(std::size_t index, AbilityId id, bool learned) {
+  if (!gameIsRunning() || id >= LEARNED_ABILITY_COUNT)
+    return;
+  auto abilities = getCharacterAbilities(index);
+  set_ability_learned(abilities, id, learned);
+  write_game(
+    ROSTER_OFFSET + index * sizeof(Character) + offsetof(Character, abilities) +
+      id / 8,
+    abilities[id / 8]
+  );
+}
+
 std::list<core::RosterEntry> getRosterEntries() {
   TRY_THROW(!gameIsRunning());
 

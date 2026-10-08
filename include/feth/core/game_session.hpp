@@ -3,6 +3,7 @@
 
 #pragma once
 
+#include "feth/core/abilities.hpp"
 #include "feth/core/engine.hpp"
 #include "feth/core/locale.hpp"
 #include "feth/core/types.hpp"
@@ -22,6 +23,8 @@ Battalion getBattalion(std::size_t index);
 void setBattalion(std::size_t index, Battalion battalion);
 void refillBattalionStamina();
 void addMissingBattalions();
+LearnedAbilities getCharacterAbilities(std::size_t index);
+void setCharacterAbilityLearned(std::size_t index, AbilityId id, bool learned);
 std::list<core::RosterEntry> getRosterEntries();
 core::ClassUnlocks getRosterCharacterClassUnlockAtIndex(std::size_t index);
 void setClassUnlockAtIndexOfRosterCharacterAtIndex(

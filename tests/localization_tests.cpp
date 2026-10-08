@@ -73,5 +73,17 @@ int main() {
   }
   assert(ui_text("Item Trainer", Locale::SimplifiedChinese) == "物品编辑");
   assert(ui_text("Support Edit", Locale::Japanese) == "支援編集");
+  for (const auto* label :
+       {"Class Unlocks",
+        "Ability Edit",
+        "Learned Abilities",
+        "Learned",
+        "Not Learned",
+        "Battalion Edit",
+        "Normal Durability",
+        "Refill All Durability"}) {
+    assert(ui_text(label, Locale::SimplifiedChinese) != label);
+    assert(ui_text(label, Locale::Japanese) != label);
+  }
   std::cout << "Localization checks passed\n";
 }
