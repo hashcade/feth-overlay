@@ -22,7 +22,6 @@ constexpr const char* kMessages[][3] = {
   {"Refill Endurance", "补满兵力", "戦力を補充"},
   {"Apply Battalion", "应用骑士团设置", "騎士団設定を適用"},
   {"Refill All Battalions", "一键补满骑士团兵力", "全騎士団の戦力を補充"},
-  {"Complete Battalion Collection", "补全骑士团种类", "騎士団の種類を揃える"},
   {"Support Edit", "支援编辑", "支援編集"},
   {"Classes", "职业", "兵種"},
   {"Support", "支援", "支援"},

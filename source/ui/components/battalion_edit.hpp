@@ -133,11 +133,6 @@ protected:
       })
     );
     list->addItem(
-      action_item(model_, text(model_, "Complete Battalion Collection"), [] {
-        game::addMissingBattalions();
-      })
-    );
-    list->addItem(
       submenu_item<BattalionListGui>(model_, text(model_, "Owned Battalions"))
     );
   }

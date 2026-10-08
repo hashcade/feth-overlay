@@ -51,20 +51,6 @@ int main() {
   assert((battalions[0] == Battalion{3, 120, 30, 0, 4}));
   assert(battalions[1].stamina == 7);
   assert(refill_battalions(battalions) == 0);
-  const auto existing = battalions[0];
-  assert(
-    add_missing_battalions(battalions) == battalion_templates().size() - 1
-  );
-  assert(battalions[0] == existing && battalions[1].type == 99);
-  assert(battalions[2].exp == 400 && battalions[2].characterId == -1);
-  assert(add_missing_battalions(battalions) == 0);
-  assert(!battalion_name(0, Locale::English).empty());
-  std::array<Battalion, 1> full{{existing}};
-  assert(add_missing_battalions(full) == 0 && full[0] == existing);
-  std::array<Battalion, 1> free{{{-1, 0, 0, 200, 80}}};
-  assert(add_missing_battalions(free) == 1);
-  assert(free[0].type == 0 && free[0].stamina == 30 && free[0].skill == 4);
-
   ItemArray items{};
   items[0] = {1000, 10, 1};
   items[1] = {1001, 20, 2};

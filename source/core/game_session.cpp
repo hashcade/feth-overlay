@@ -246,20 +246,6 @@ void refillBattalionStamina() {
   }
 }
 
-void addMissingBattalions() {
-  if (!gameIsRunning())
-    return;
-  auto battalions = read_game<BattalionArray>(BATTALION_OFFSET);
-  const auto original = battalions;
-  add_missing_battalions(battalions);
-  for (std::size_t index = 0; index < battalions.size(); ++index) {
-    if (battalions[index] != original[index])
-      write_game(
-        BATTALION_OFFSET + index * sizeof(Battalion), battalions[index]
-      );
-  }
-}
-
 LearnedAbilities getCharacterAbilities(std::size_t index) {
   TRY_THROW(!gameIsRunning());
   return read_game<LearnedAbilities>(

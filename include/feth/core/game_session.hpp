@@ -22,7 +22,6 @@ BattalionArray getBattalions();
 Battalion getBattalion(std::size_t index);
 void setBattalion(std::size_t index, Battalion battalion);
 void refillBattalionStamina();
-void addMissingBattalions();
 LearnedAbilities getCharacterAbilities(std::size_t index);
 void setCharacterAbilityLearned(std::size_t index, AbilityId id, bool learned);
 std::list<core::RosterEntry> getRosterEntries();

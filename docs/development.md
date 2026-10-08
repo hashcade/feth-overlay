@@ -36,7 +36,7 @@ make -f Makefile.host test
 ```
 
 Host checks cover item editing and normal durability, class flag lookup,
-ability flags, battalion refill and insertion, and support grouping. Layout
+ability flags, battalion refill, and support grouping. Layout
 assertions check the character size and edited field offsets. A successful
 build does not verify menu behavior or memory edits on hardware.
 

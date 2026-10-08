@@ -31,5 +31,4 @@ std::span<const BattalionTemplate> battalion_templates();
 const BattalionTemplate* battalion_template(std::uint8_t type);
 std::string battalion_name(std::uint8_t type, Locale locale);
 std::size_t refill_battalions(std::span<Battalion> battalions);
-std::size_t add_missing_battalions(std::span<Battalion> battalions);
 }  // namespace feth::core
