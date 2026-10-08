@@ -1,7 +1,9 @@
 #pragma once
 
 #include <switch.h>
+#include <dmntcht.h>
 
+#include <algorithm>
 #include <array>
 #include <bitset>
 #include <list>
@@ -44,31 +46,6 @@
 
 // dmntcht header
 using BuildId = std::array<u8, 0x20>;
-
-extern "C" {
-typedef struct {
-    u64 base;
-    u64 size;
-} DmntMemoryRegionExtents;
-
-typedef struct {
-    u64 process_id;
-    u64 title_id;
-    DmntMemoryRegionExtents main_nso_extents;
-    DmntMemoryRegionExtents heap_extents;
-    DmntMemoryRegionExtents alias_extents;
-    DmntMemoryRegionExtents address_space_extents;
-    BuildId main_nso_build_id;
-} DmntCheatProcessMetadata;
-
-Result dmntchtInitialize();
-void dmntchtExit();
-Result dmntchtHasCheatProcess(bool* out);
-Result dmntchtForceOpenCheatProcess();
-Result dmntchtGetCheatProcessMetadata(DmntCheatProcessMetadata* out_metadata);
-Result dmntchtReadCheatProcessMemory(u64 address, void* buffer, size_t size);
-Result dmntchtWriteCheatProcessMemory(u64 address, void* buffer, size_t size);
-}
 
 // three houses stuff
 namespace feth {
@@ -308,21 +285,14 @@ static const auto SUPPORT_LIST = std::list<SupportPair>{
 static DmntCheatProcessMetadata s_processMetadata = {};
 
 auto gameIsRunning() -> bool {
-    // update process meta
     auto hasCheatProcess = false;
-    TRY_THROW(dmntchtHasCheatProcess(&hasCheatProcess));
-    if (not hasCheatProcess) {
-        if (R_FAILED(dmntchtForceOpenCheatProcess())) {
-            return false;
-        }
-        TRY_THROW(dmntchtGetCheatProcessMetadata(&s_processMetadata));
-    }
+    if (R_FAILED(dmntchtHasCheatProcess(&hasCheatProcess))) return false;
+    if (not hasCheatProcess and R_FAILED(dmntchtForceOpenCheatProcess())) return false;
 
-    // ensure game build
-    if (s_processMetadata.main_nso_build_id != TARGET_BID) {
-        return false;
-    }
-    return true;
+    // Refresh even when another overlay already opened the game process.
+    if (R_FAILED(dmntchtGetCheatProcessMetadata(&s_processMetadata))) return false;
+
+    return std::equal(TARGET_BID.begin(), TARGET_BID.end(), s_processMetadata.main_nso_build_id);
 }
 
 void setItemsWithIdSet(const std::set<ItemId>* p_itemIdSet, const ItemDurability* p_durabilityToSet,

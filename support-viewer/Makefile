@@ -42,9 +42,9 @@ APP_VERSION :=	0.1.0
 
 TARGET		:=	feth-support-viewer
 BUILD		:=	build
-SOURCES		:=	source
+SOURCES		:=	source ../libs/Atmosphere-libs/libstratosphere/source/dmnt
 DATA		:=	data
-INCLUDES	:=	include ../libs/libtesla/include
+INCLUDES	:=	include ../libs/libtesla/include ../libs/Atmosphere-libs/libstratosphere/source/dmnt
 
 NO_ICON		:=  1
 
@@ -63,13 +63,13 @@ CXXFLAGS	:= $(CFLAGS) -std=c++20
 ASFLAGS	:=	-g $(ARCH)
 LDFLAGS	=	-specs=$(DEVKITPRO)/libnx/switch.specs -g $(ARCH) -Wl,-Map,$(notdir $*.map)
 
-LIBS	:= -lnx -lstratosphere
+LIBS	:= -lnx
 
 #---------------------------------------------------------------------------------
 # list of directories containing libraries, this must be the top level containing
 # include and lib
 #---------------------------------------------------------------------------------
-LIBDIRS	:= $(PORTLIBS) $(LIBNX) $(LIBSTRAT)
+LIBDIRS	:= $(PORTLIBS) $(LIBNX)
 
 
 #---------------------------------------------------------------------------------

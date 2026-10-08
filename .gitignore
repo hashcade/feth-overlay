@@ -8,3 +8,7 @@ build/
 *.nacp
 
 *.nro
+
+*.map
+.build-host/
+output/
