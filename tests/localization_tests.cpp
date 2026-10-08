@@ -74,7 +74,7 @@ int main() {
   assert(ui_text("Item Trainer", Locale::SimplifiedChinese) == "物品编辑");
   assert(ui_text("Support Edit", Locale::Japanese) == "支援編集");
   for (const auto* label :
-       {"Money & Renown",
+       {"Resources",
         "Money",
         "Renown",
         "Apply Changes",

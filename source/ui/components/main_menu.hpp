@@ -31,7 +31,7 @@ protected:
     list->addItem(language_item_);
 
     resources_menu_ =
-      submenu_item<ResourcesEditGui>(model_, text(model_, "Money & Renown"));
+      submenu_item<ResourcesEditGui>(model_, text(model_, "Resources"));
     item_menu_ =
       submenu_item<ItemTrainerGui>(model_, text(model_, "Item Trainer"));
     class_menu_ =
@@ -54,7 +54,7 @@ private:
   void refresh_labels() {
     language_item_->setText(text(model_, "Language"));
     language_item_->setValue(language_value(model_));
-    resources_menu_->setText(text(model_, "Money & Renown"));
+    resources_menu_->setText(text(model_, "Resources"));
     item_menu_->setText(text(model_, "Item Trainer"));
     class_menu_->setText(text(model_, "Class Unlocks"));
     ability_menu_->setText(text(model_, "Ability Learning"));

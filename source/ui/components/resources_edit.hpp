@@ -5,7 +5,7 @@
 class ResourcesEditGui final : public MenuGui {
 public:
   explicit ResourcesEditGui(Model& model)
-    : MenuGui(model, "Money & Renown") {}
+    : MenuGui(model, "Resources") {}
 
 protected:
   void populate(tsl::elm::List* list) override {

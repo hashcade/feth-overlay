@@ -17,7 +17,7 @@ Your language choice is remembered between sessions.
 
 | Menu | Features |
 | --- | --- |
-| Money & Renown | Edit money and renown. |
+| Resources | Edit money and renown. |
 | Item Trainer | Add or edit Convoy items, adjust owned items by category, or refill Convoy and carried-item durability. |
 | Class Unlocks | Toggle unlocked classes for each roster character. |
 | Ability Learning | Learn or forget abilities for each roster character. |
