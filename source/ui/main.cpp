@@ -8,6 +8,7 @@
 #include "feth/core/catalog.hpp"
 #include "feth/core/engine.hpp"
 #include "feth/core/game_session.hpp"
+#include "feth/core/items.hpp"
 #include "feth/core/messages.hpp"
 #include "feth/core/names.hpp"
 

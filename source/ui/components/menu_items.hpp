@@ -149,31 +149,52 @@ submenu_item(Model& model, const std::string& label, Args... args) {
   return item;
 }
 
-tsl::elm::ListItem* numeric_item(
-  const std::string& label, int& value, int minimum, int maximum, int largeStep
-) {
-  auto* item = new tsl::elm::ListItem(label);
-  item->setValue(std::to_string(value));
-  item->setClickListener(
-    [item, value_ptr = &value, minimum, maximum, largeStep](u64 keys) {
-      int delta{};
-      if (keys & HidNpadButton_AnyLeft) {
-        delta = -1;
-      } else if (keys & HidNpadButton_AnyRight) {
-        delta = 1;
-      } else if (keys & HidNpadButton_L) {
-        delta = -largeStep;
-      } else if (keys & HidNpadButton_R) {
-        delta = largeStep;
-      } else {
-        return false;
-      }
-      *value_ptr = std::clamp(*value_ptr + delta, minimum, maximum);
-      item->setValue(std::to_string(*value_ptr));
-      return true;
-    }
-  );
-  return item;
+struct NumericOptions {
+  int minimum{};
+  int maximum{};
+  int largeStep{};
+};
+
+class NumericListItem final : public tsl::elm::ListItem {
+public:
+  NumericListItem(std::string label, int& value, NumericOptions options)
+    : ListItem(std::move(label)),
+      value_(value),
+      options_(options) {
+    setMaximum(options.maximum);
+  }
+
+  bool onClick(u64 keys) override {
+    int delta{};
+    if (keys & HidNpadButton_AnyLeft)
+      delta = -1;
+    else if (keys & HidNpadButton_AnyRight)
+      delta = 1;
+    else if (keys & HidNpadButton_L)
+      delta = -options_.largeStep;
+    else if (keys & HidNpadButton_R)
+      delta = options_.largeStep;
+    else
+      return false;
+    value_ = std::clamp(value_ + delta, options_.minimum, options_.maximum);
+    setValue(std::to_string(value_));
+    return true;
+  }
+
+  void setMaximum(int maximum) {
+    options_.maximum = maximum;
+    value_ = std::clamp(value_, options_.minimum, options_.maximum);
+    setValue(std::to_string(value_));
+  }
+
+private:
+  int& value_;
+  NumericOptions options_;
+};
+
+NumericListItem*
+numeric_item(const std::string& label, int& value, NumericOptions options) {
+  return new NumericListItem(label, value, options);
 }
 
 tsl::elm::ListItem* action_item(

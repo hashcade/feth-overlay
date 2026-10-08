@@ -9,13 +9,16 @@
 
 namespace feth::core {
 
+struct ItemEditOptions {
+  const std::set<ItemId>* ids{};
+  const ItemDurability* durability{};
+  const ItemAmount* amount{};
+  bool addMissing{};
+  bool normalDurability{};
+};
+
 void editItems(
-  ItemArray& items,
-  ItemCount& count,
-  const std::set<ItemId>* ids,
-  const ItemDurability* durability,
-  const ItemAmount* amount,
-  bool shouldAdd
+  ItemArray& items, ItemCount& count, const ItemEditOptions& options
 );
 bool classIsUnlocked(const ClassUnlocks& unlocks, ClassId classId);
 SupportCollection getSupportCollection();

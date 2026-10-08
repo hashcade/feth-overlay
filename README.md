@@ -17,13 +17,15 @@ Your language choice is remembered between sessions.
 
 | Menu | Features |
 | --- | --- |
-| Item Trainer | Add or edit a specific Convoy item, or adjust owned items by category. |
+| Item Trainer | Add or edit Convoy items, adjust owned items by category, or refill Convoy and carried-item durability. |
 | Class Edit | Toggle unlocked classes for each roster character. |
 | Support Edit | Edit support points between characters. |
 
 Quick edits affect owned items by default, set amounts to 99, and leave
-existing durability unchanged. Enable **Add Missing Items** or **Durability
-to 100** when needed. Newly added items default to 100 durability.
+existing durability unchanged. Enable **Add Missing Items** or **Normal
+Durability** when needed. New items use their normal maximum durability.
+**Refill All Durability** restores Convoy and character-held items to their
+individual maximums. Unknown item IDs are left unchanged.
 
 See the [item ID list](docs/feth_item_ids.txt) when adding a specific item.
 Changes affect the running game; save in-game to keep them.

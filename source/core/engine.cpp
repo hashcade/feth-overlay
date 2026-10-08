@@ -3,6 +3,7 @@
 
 #include "feth/core/engine.hpp"
 #include "feth/core/catalog.hpp"
+#include "feth/core/items.hpp"
 
 #include <map>
 #include <unordered_map>
@@ -10,13 +11,11 @@
 namespace feth::core {
 
 void editItems(
-  ItemArray& items,
-  ItemCount& curItemCount,
-  const std::set<ItemId>* p_itemIdSet,
-  const ItemDurability* p_durabilityToSet,
-  const ItemAmount* p_amountToSet,
-  bool shouldAdd
+  ItemArray& items, ItemCount& curItemCount, const ItemEditOptions& options
 ) {
+  const auto* p_itemIdSet = options.ids;
+  const auto* p_durabilityToSet = options.durability;
+  const auto* p_amountToSet = options.amount;
   // make a map to keep track which item was found
   auto foundItemMap = std::map<ItemId, bool>{};
   if (p_itemIdSet) {
@@ -26,8 +25,8 @@ void editItems(
   }
 
   // search and set existing items
-  auto curItemIdx = 0;
-  for (auto& item : items) {
+  for (ItemCount index = 0; index < curItemCount; ++index) {
+    auto& item = items[index];
     auto itemEntryInFoundMap = foundItemMap.find(item.id);
     auto itemIsFound = itemEntryInFoundMap != end(foundItemMap);
 
@@ -40,15 +39,16 @@ void editItems(
         item.durability = *p_durabilityToSet;
       if (p_amountToSet)
         item.amount = *p_amountToSet;
+      if (options.normalDurability) {
+        if (const auto maximum = normal_item_durability(item.id)) {
+          item.durability = *maximum;
+        }
+      }
     }
-
-    curItemIdx++;
-    if (curItemIdx >= curItemCount)
-      break;
   }
 
   // take care of adding items if necessary
-  if (p_itemIdSet and shouldAdd) {
+  if (p_itemIdSet and options.addMissing) {
     for (auto& foundItemMapEntry : foundItemMap) {
       auto itemId = foundItemMapEntry.first;
       auto itemWasFound = foundItemMapEntry.second;
@@ -58,8 +58,9 @@ void editItems(
       }
 
       if (not itemWasFound) {
-        auto durabilityToSet =
-          p_durabilityToSet ? *p_durabilityToSet : MAX_ITEM_DURABILITY;
+        auto durabilityToSet = p_durabilityToSet
+                                 ? *p_durabilityToSet
+                                 : normal_item_durability(itemId).value_or(0);
         auto amountToSet = p_amountToSet ? *p_amountToSet : ItemAmount{1};
         items[curItemCount] = {itemId, durabilityToSet, amountToSet};
         curItemCount++;

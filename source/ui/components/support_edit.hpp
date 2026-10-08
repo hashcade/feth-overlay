@@ -19,7 +19,7 @@ protected:
   void populate(tsl::elm::List* list) override {
     points_ = game::getSupportPointAtIndex(entry_.index);
     list->addItem(
-      numeric_item(text(model_, "Support Points"), points_, 0, 9999, 100)
+      numeric_item(text(model_, "Support Points"), points_, {0, 9999, 100})
     );
     list->addItem(action_item(model_, text(model_, "Apply Support"), [this] {
       game::setSupportPointAtIndex(

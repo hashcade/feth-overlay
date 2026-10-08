@@ -18,6 +18,11 @@ public:
       name_item_->setText(
         core::item_name(static_cast<core::ItemId>(id), model_.display_locale())
       );
+      const auto maximum =
+        core::normal_item_durability(static_cast<core::ItemId>(id));
+      if (maximum)
+        model_.items().durability = *maximum;
+      durability_item_->setMaximum(maximum.value_or(255));
       last_item_id_ = id;
     }
   }
@@ -26,7 +31,7 @@ protected:
   void populate(tsl::elm::List* list) override {
     auto& settings = model_.items();
     list->addItem(numeric_item(
-      text(model_, "Item ID"), settings.id, 0, core::MAX_ITEM_ID, 100
+      text(model_, "Item ID"), settings.id, {0, core::MAX_ITEM_ID, 100}
     ));
     name_item_ = new tsl::elm::ListItem(
       core::item_name(
@@ -35,15 +40,18 @@ protected:
     );
     list->addItem(name_item_);
 
-    list->addItem(numeric_item(
+    durability_item_ = numeric_item(
       text(model_, "Durability"),
       settings.durability,
-      0,
-      std::numeric_limits<core::ItemDurability>::max(),
-      10
-    ));
+      {0,
+       core::normal_item_durability(static_cast<core::ItemId>(settings.id))
+         .value_or(255),
+       10}
+    );
+    list->addItem(durability_item_);
+    last_item_id_ = settings.id;
     list->addItem(numeric_item(
-      text(model_, "Amount"), settings.amount, 1, core::MAX_ITEM_AMOUNT, 10
+      text(model_, "Amount"), settings.amount, {1, core::MAX_ITEM_AMOUNT, 10}
     ));
 
     list->addItem(action_item(model_, text(model_, "Apply Item"), [this] {
@@ -52,12 +60,18 @@ protected:
       const auto durability =
         static_cast<core::ItemDurability>(settings.durability);
       const auto amount = static_cast<core::ItemAmount>(settings.amount);
-      game::setItemsWithIdSet(&ids, &durability, &amount, true);
+      game::setItemsWithIdSet(
+        {.ids = &ids,
+         .durability = &durability,
+         .amount = &amount,
+         .addMissing = true}
+      );
     }));
   }
 
 private:
   tsl::elm::ListItem* name_item_{};
+  NumericListItem* durability_item_{};
   int last_item_id_{-1};
 };
 
@@ -70,6 +84,11 @@ protected:
   void populate(tsl::elm::List* list) override {
     list->addItem(
       submenu_item<SetItemGui>(model_, text(model_, "Set Specific Item"))
+    );
+    list->addItem(
+      action_item(model_, text(model_, "Refill All Durability"), [] {
+        game::refillItemDurability();
+      })
     );
     category_header(list, text(model_, "Quick Edit"));
 
@@ -86,13 +105,13 @@ protected:
     list->addItem(add_missing);
 
     auto* durability = new tsl::elm::ToggleListItem(
-      text(model_, "Durability to 100"),
-      settings.maxDurability,
+      text(model_, "Normal Durability"),
+      settings.normalDurability,
       text(model_, "On"),
       text(model_, "Off")
     );
     durability->setStateChangedListener([this](bool enabled) {
-      model_.items().maxDurability = enabled;
+      model_.items().normalDurability = enabled;
     });
     list->addItem(durability);
 
@@ -124,10 +143,10 @@ private:
   void applyItems(const std::set<core::ItemId>* ids, bool addMissing) {
     const auto& settings = model_.items();
     game::setItemsWithIdSet(
-      ids,
-      settings.maxDurability ? &core::MAX_ITEM_DURABILITY : nullptr,
-      settings.maxAmount ? &core::MAX_ITEM_AMOUNT : nullptr,
-      addMissing
+      {.ids = ids,
+       .amount = settings.maxAmount ? &core::MAX_ITEM_AMOUNT : nullptr,
+       .addMissing = addMissing,
+       .normalDurability = settings.normalDurability}
     );
   }
 };

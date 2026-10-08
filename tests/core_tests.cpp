@@ -3,6 +3,7 @@
 
 #include "feth/core/catalog.hpp"
 #include "feth/core/engine.hpp"
+#include "feth/core/items.hpp"
 
 #include <cassert>
 #include <iostream>
@@ -11,6 +12,17 @@
 using namespace feth::core;
 
 int main() {
+  // Normal maximums differ between weapons and consumables.
+  assert(normal_item_durability(16) == 40);
+  assert(normal_item_durability(1000) == 3);
+  assert(!normal_item_durability(65535));
+  std::array<Item, 3> worn{{{16, 1, 1}, {1000, 1, 2}, {65535, 7, 1}}};
+  assert(refill_items(worn) == 2);
+  assert(worn[0].durability == 40 && worn[0].amount == 1);
+  assert(worn[1].durability == 3 && worn[1].amount == 2);
+  assert(worn[2].durability == 7);
+  assert(refill_items(worn) == 0);
+
   ItemArray items{};
   items[0] = {1000, 10, 1};
   items[1] = {1001, 20, 2};
@@ -18,21 +30,24 @@ int main() {
   const std::set<ItemId> selection{1000, 1002};
 
   // Owned-only editing updates the selected item without adding missing ones.
-  editItems(items, count, &selection, nullptr, &MAX_ITEM_AMOUNT, false);
+  editItems(items, count, {.ids = &selection, .amount = &MAX_ITEM_AMOUNT});
   assert(count == 2);
   assert(items[0].amount == 99 && items[0].durability == 10);
   assert(items[1].amount == 2);
 
-  // Batch insertion keeps upstream's default durability and quantity.
-  editItems(items, count, &selection, nullptr, nullptr, true);
+  // Batch insertion uses the normal durability and quantity.
+  editItems(items, count, {.ids = &selection, .addMissing = true});
   assert(count == 3);
   assert(
-    items[2].id == 1002 && items[2].durability == 100 && items[2].amount == 1
+    items[2].id == 1002 &&
+    items[2].durability == normal_item_durability(1002) && items[2].amount == 1
   );
 
   // The owned-items action applies to every current item.
   editItems(
-    items, count, nullptr, &MAX_ITEM_DURABILITY, &MAX_ITEM_AMOUNT, false
+    items,
+    count,
+    {.durability = &MAX_ITEM_DURABILITY, .amount = &MAX_ITEM_AMOUNT}
   );
   for (ItemCount index = 0; index < count; ++index) {
     assert(items[index].durability == 100 && items[index].amount == 99);
@@ -43,10 +58,26 @@ int main() {
   count = TOTAL_ITEM_COUNT;
   const std::set<ItemId> missing{1002};
   editItems(
-    items, count, &missing, &MAX_ITEM_DURABILITY, &MAX_ITEM_AMOUNT, true
+    items,
+    count,
+    {.ids = &missing,
+     .durability = &MAX_ITEM_DURABILITY,
+     .amount = &MAX_ITEM_AMOUNT,
+     .addMissing = true}
   );
   assert(count == TOTAL_ITEM_COUNT);
   assert(items.back().id == 1000 && items.back().amount == 1);
+
+  // Insertion uses each item's normal durability; refilling never alters
+  // amount.
+  items.fill({});
+  count = 0;
+  const std::set<ItemId> sword{16};
+  editItems(items, count, {.ids = &sword, .addMissing = true});
+  assert(count == 1 && items[0].durability == 40);
+  items[0].durability = 1;
+  editItems(items, count, {.normalDurability = true});
+  assert(items[0].durability == 40 && items[0].amount == 1);
 
   ClassUnlocks unlocks{};
   unlocks.baseClassUnlocks.set(0);

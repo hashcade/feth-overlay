@@ -13,7 +13,7 @@ namespace feth::app {
 
 struct ItemSettings {
   bool addMissing{};
-  bool maxDurability{};
+  bool normalDurability{};
   bool maxAmount{true};
   int id{};
   int durability{core::MAX_ITEM_DURABILITY};

@@ -5,6 +5,7 @@
 #include "feth/core/catalog.hpp"
 #include "feth/core/engine.hpp"
 #include "feth/core/game_profile.hpp"
+#include "feth/core/items.hpp"
 
 #include <dmntcht.h>
 #include <switch.h>
@@ -88,12 +89,7 @@ Locale detect_locale() {
   return Locale::English;
 }
 
-void setItemsWithIdSet(
-  const std::set<ItemId>* p_itemIdSet,
-  const ItemDurability* p_durabilityToSet,
-  const ItemAmount* p_amountToSet,
-  const bool shouldAdd
-) {
+void setItemsWithIdSet(const ItemEditOptions& options) {
   if (not gameIsRunning())
     return;
 
@@ -109,14 +105,7 @@ void setItemsWithIdSet(
     sizeof(curItemCount)
   ));
 
-  core::editItems(
-    items,
-    curItemCount,
-    p_itemIdSet,
-    p_durabilityToSet,
-    p_amountToSet,
-    shouldAdd
-  );
+  core::editItems(items, curItemCount, options);
 
   TRY_THROW(dmntchtWriteCheatProcessMemory(
     s_processMetadata.main_nso_extents.base + ITEM_OFFSET, &items, sizeof(items)
@@ -126,6 +115,40 @@ void setItemsWithIdSet(
     &curItemCount,
     sizeof(curItemCount)
   ));
+}
+
+void refillItemDurability() {
+  if (!gameIsRunning())
+    return;
+  ItemArray items{};
+  ItemCount count{};
+  const auto base = s_processMetadata.main_nso_extents.base;
+  TRY_THROW(
+    dmntchtReadCheatProcessMemory(base + ITEM_OFFSET, &items, sizeof(items))
+  );
+  TRY_THROW(dmntchtReadCheatProcessMemory(
+    base + ITEM_COUNT_OFFSET, &count, sizeof(count)
+  ));
+  if (refill_items(std::span(items).first(count))) {
+    TRY_THROW(
+      dmntchtWriteCheatProcessMemory(base + ITEM_OFFSET, &items, sizeof(items))
+    );
+  }
+
+  RosterCharacterArray roster{};
+  TRY_THROW(
+    dmntchtReadCheatProcessMemory(base + ROSTER_OFFSET, &roster, sizeof(roster))
+  );
+  for (std::size_t index = 0; index < roster.size(); ++index) {
+    auto held_items = roster[index].heldItems;
+    if (refill_items(held_items)) {
+      TRY_THROW(dmntchtWriteCheatProcessMemory(
+        base + ROSTER_OFFSET + index * sizeof(Character),
+        &held_items,
+        sizeof(held_items)
+      ));
+    }
+  }
 }
 
 std::list<core::RosterEntry> getRosterEntries() {

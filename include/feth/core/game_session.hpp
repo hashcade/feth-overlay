@@ -3,6 +3,7 @@
 
 #pragma once
 
+#include "feth/core/engine.hpp"
 #include "feth/core/locale.hpp"
 #include "feth/core/types.hpp"
 
@@ -14,12 +15,8 @@ bool initialize();
 void shutdown();
 bool gameIsRunning();
 Locale detect_locale();
-void setItemsWithIdSet(
-  const std::set<core::ItemId>* ids,
-  const core::ItemDurability* durability,
-  const core::ItemAmount* amount,
-  bool shouldAdd
-);
+void setItemsWithIdSet(const ItemEditOptions& options);
+void refillItemDurability();
 std::list<core::RosterEntry> getRosterEntries();
 core::ClassUnlocks getRosterCharacterClassUnlockAtIndex(std::size_t index);
 void setClassUnlockAtIndexOfRosterCharacterAtIndex(
