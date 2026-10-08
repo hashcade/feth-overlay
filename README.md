@@ -141,30 +141,9 @@ Falo on GBAtemp - for info from his work on the save editor
 
 # Building
 
-Initialize the pinned dependencies, then build with devkitPro's current
-`devkitA64`, `libnx`, and Switch tools:
-
 ```sh
 git submodule update --init --recursive
-make -j2 package
+make -C item-trainer
+make -C class-edit
+make -C support-viewer
 ```
-
-The Atmosphere `dmnt:cht` client is compiled directly from the pinned
-Atmosphere-libs submodule; a separate `libstratosphere.a` build is not needed.
-
-Alternatively, build with the devkitPro container:
-
-```sh
-docker run --rm -v "$PWD:/work" -w /work devkitpro/devkita64:latest make -j2 package
-```
-
-The package is written to `output/feth-overlays.zip`. Extract it to the SD card
-root to install Item Trainer, Class Edit, and Support Edit under
-`switch/.overlays/`. These overlays target Three Houses v1.2.0, build ID
-`89048449BA238C8CF565518B83BF02D3`.
-
-Run `make test` with a host C++20 compiler to check game-process attachment,
-metadata refresh after relaunch, and rejection of unsupported builds.
-Compilation and host tests do not establish compatibility on real hardware;
-the generated overlays still need to be tested with the target firmware,
-Atmosphere, and overlay loader.
