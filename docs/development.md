@@ -84,6 +84,14 @@ from the existing support offset: the inventory and four uint32 fields
 immediately precede support values in `Player_V23`. Battalion edits also
 update a character's equipped copy when its character ID and type match.
 
+Money and renown are separate uint32 fields, at offsets `0x24274` and
+`0x250D4` relative to the Convoy. These were checked using the editor's
+`Player_V23` and `Activities_V23` layouts with `Marshal.OffsetOf` and
+`Marshal.SizeOf`, anchored to the existing support offset. The offsets also
+match [Gamerjin's v1.2.0 codes](https://gbatemp.net/threads/fire-emblem-three-houses-general-hacking.544144/page-139#post-8946442).
+Only the two resource fields are written. Their input limits match the editor:
+9,999,999 money and 999,999 renown.
+
 ## Releases
 
 Tags matching `v<VERSION>` build and publish the single `feth-overlay.ovl`.

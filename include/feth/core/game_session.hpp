@@ -6,6 +6,7 @@
 #include "feth/core/abilities.hpp"
 #include "feth/core/engine.hpp"
 #include "feth/core/locale.hpp"
+#include "feth/core/resources.hpp"
 #include "feth/core/types.hpp"
 
 #include <set>
@@ -18,6 +19,8 @@ bool gameIsRunning();
 Locale detect_locale();
 void setItemsWithIdSet(const ItemEditOptions& options);
 void refillItemDurability();
+PlayerResources getPlayerResources();
+void setPlayerResources(const PlayerResources& resources);
 BattalionArray getBattalions();
 Battalion getBattalion(std::size_t index);
 void setBattalion(std::size_t index, Battalion battalion);

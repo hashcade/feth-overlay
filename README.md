@@ -6,8 +6,8 @@
 
 [![build](https://github.com/jinghaihan/feth-overlay/actions/workflows/build.yml/badge.svg)](https://github.com/jinghaihan/feth-overlay/actions/workflows/build.yml)
 
-An in-game overlay for Fire Emblem: Three Houses v1.2.0. Edit items, classes,
-abilities, support points, and battalions from a single menu.
+An in-game overlay for Fire Emblem: Three Houses v1.2.0. Edit money, renown, items,
+classes, abilities, support points, and battalions from a single menu.
 
 English, Simplified Chinese, and Japanese are supported. The language follows
 your console by default; choose **Language** in the main menu to override it.
@@ -17,6 +17,7 @@ Your language choice is remembered between sessions.
 
 | Menu | Features |
 | --- | --- |
+| Money & Renown | Edit money and renown. |
 | Item Trainer | Add or edit Convoy items, adjust owned items by category, or refill Convoy and carried-item durability. |
 | Class Unlocks | Toggle unlocked classes for each roster character. |
 | Ability Learning | Learn or forget abilities for each roster character. |
@@ -61,7 +62,7 @@ Changes affect the running game; save in-game to keep them.
 - **B** returns to the previous menu.
 - **Left/Right** adjusts a numeric value by 1.
 - **L/R** adjusts item IDs and support points by 100, or durability and
-  quantities by 10.
+  quantities by 10. Money changes by 10,000 and renown by 1,000.
 - **L + Down** hides the overlay and keeps the current menu open for next time.
 - The item editor shows the localized name for the selected item ID.
 

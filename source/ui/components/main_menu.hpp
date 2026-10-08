@@ -30,6 +30,8 @@ protected:
     });
     list->addItem(language_item_);
 
+    resources_menu_ =
+      submenu_item<ResourcesEditGui>(model_, text(model_, "Money & Renown"));
     item_menu_ =
       submenu_item<ItemTrainerGui>(model_, text(model_, "Item Trainer"));
     class_menu_ =
@@ -40,6 +42,7 @@ protected:
       submenu_item<SupportGui>(model_, text(model_, "Support Edit"));
     battalion_menu_ =
       submenu_item<BattalionEditGui>(model_, text(model_, "Battalion Edit"));
+    list->addItem(resources_menu_);
     list->addItem(item_menu_);
     list->addItem(class_menu_);
     list->addItem(ability_menu_);
@@ -51,6 +54,7 @@ private:
   void refresh_labels() {
     language_item_->setText(text(model_, "Language"));
     language_item_->setValue(language_value(model_));
+    resources_menu_->setText(text(model_, "Money & Renown"));
     item_menu_->setText(text(model_, "Item Trainer"));
     class_menu_->setText(text(model_, "Class Unlocks"));
     ability_menu_->setText(text(model_, "Ability Learning"));
@@ -59,6 +63,7 @@ private:
   }
 
   tsl::elm::ListItem* language_item_{};
+  tsl::elm::ListItem* resources_menu_{};
   tsl::elm::ListItem* item_menu_{};
   tsl::elm::ListItem* class_menu_{};
   tsl::elm::ListItem* ability_menu_{};

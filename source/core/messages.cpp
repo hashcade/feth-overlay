@@ -9,6 +9,10 @@ namespace {
 constexpr const char* kMessages[][3] = {
   {"Language", "语言", "言語"},
   {"Automatic", "自动", "自動"},
+  {"Money & Renown", "金钱与名声", "資金と名声"},
+  {"Money", "金钱", "資金"},
+  {"Renown", "名声", "名声"},
+  {"Apply Changes", "应用修改", "変更を適用"},
   {"Item Trainer", "物品编辑", "アイテム編集"},
   {"Class Unlocks", "兵种解锁", "兵種解放"},
   {"Ability Learning", "特性学习", "スキル習得"},

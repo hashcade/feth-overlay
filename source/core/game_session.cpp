@@ -167,6 +167,21 @@ template <typename T> void write_game(std::size_t offset, const T& value) {
 }
 }  // namespace
 
+PlayerResources getPlayerResources() {
+  TRY_THROW(!gameIsRunning());
+  return {
+    read_game<std::uint32_t>(MONEY_OFFSET),
+    read_game<std::uint32_t>(RENOWN_OFFSET)
+  };
+}
+
+void setPlayerResources(const PlayerResources& resources) {
+  if (!gameIsRunning())
+    return;
+  write_game(MONEY_OFFSET, resources.money);
+  write_game(RENOWN_OFFSET, resources.renown);
+}
+
 BattalionArray getBattalions() {
   TRY_THROW(!gameIsRunning());
   return read_game<BattalionArray>(BATTALION_OFFSET);

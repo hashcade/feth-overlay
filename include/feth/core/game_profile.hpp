@@ -44,6 +44,10 @@ static constexpr auto ITEM_OFFSET = 0x01B121A0;
 static constexpr auto ITEM_COUNT_OFFSET = ITEM_OFFSET + sizeof(ItemArray);
 static constexpr auto ROSTER_OFFSET = ITEM_COUNT_OFFSET + sizeof(ItemCount);
 static constexpr auto SUPPORT_OFFSET = ITEM_OFFSET + 0x24280;
+// Player_V23.Money and Activities_V23.Reputation, verified against the editor
+// layouts and Gamerjin's v1.2.0 resource codes (see docs/development.md).
+static constexpr auto MONEY_OFFSET = ITEM_OFFSET + 0x24274;
+static constexpr auto RENOWN_OFFSET = ITEM_OFFSET + 0x250D4;
 // The v1.2.0 player block has 200 battalions followed by four uint32 fields
 // before its support values (Player_V23 in feth-save-editor).
 static constexpr auto BATTALION_OFFSET =

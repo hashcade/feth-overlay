@@ -33,6 +33,7 @@ std::chrono::steady_clock::time_point g_shown_at;
 
 // clang-format off
 #include "components/menu_items.hpp"
+#include "components/resources_edit.hpp"
 #include "components/item_trainer.hpp"
 #include "components/class_edit.hpp"
 #include "components/ability_edit.hpp"
