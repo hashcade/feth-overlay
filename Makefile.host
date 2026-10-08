@@ -1,0 +1,20 @@
+# SPDX-License-Identifier: MIT
+# Copyright (c) 2026 Jing Haihan
+
+CXX ?= c++
+CXXFLAGS ?= -std=c++20 -Wall -Wextra -Werror -pedantic -O2
+
+HOST_BUILD := .build-host
+CORE_SOURCES := source/core/catalog.cpp source/core/engine.cpp
+
+.PHONY: test clean-host
+
+test: $(HOST_BUILD)/core-tests
+	@$(HOST_BUILD)/core-tests
+
+$(HOST_BUILD)/core-tests: $(CORE_SOURCES) tests/core_tests.cpp $(wildcard include/feth/core/*.hpp)
+	@mkdir -p $(HOST_BUILD)
+	$(CXX) $(CXXFLAGS) -Iinclude $(CORE_SOURCES) tests/core_tests.cpp -o $@
+
+clean-host:
+	rm -rf $(HOST_BUILD)

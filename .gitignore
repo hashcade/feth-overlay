@@ -11,3 +11,4 @@ build/
 
 *.map
 output/
+.build-host/

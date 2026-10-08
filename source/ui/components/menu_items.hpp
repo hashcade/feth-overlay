@@ -1,0 +1,154 @@
+// SPDX-License-Identifier: MIT
+// Copyright (c) 2026 Jing Haihan
+
+#pragma once
+
+// Included by source/ui/main.cpp inside its private UI namespace.
+
+class MenuGui : public tsl::Gui {
+public:
+  MenuGui(Model& model, std::string title, bool requiresGame = true)
+    : model_(model),
+      title_(std::move(title)),
+      requires_game_(requiresGame) {}
+
+  tsl::elm::Element* createUI() override {
+    auto* frame = new tsl::elm::OverlayFrame(title_, kVersion);
+    auto* list = new tsl::elm::List(6);
+
+    list->addItem(
+      new tsl::elm::CustomDrawer(
+        [this](tsl::gfx::Renderer* renderer, u16 x, u16 y, u16, u16) {
+          renderer->drawString(
+            model_.status().c_str(),
+            false,
+            x + 8,
+            y + 30,
+            19,
+            renderer->a({0xC, 0xC, 0xC, 0xF})
+          );
+        }
+      ),
+      55
+    );
+
+    const bool ready = model_.refresh();
+    if (ready || !requires_game_) {
+      try {
+        populate(list);
+      } catch (const std::exception& error) {
+        model_.showError(error.what());
+      }
+    }
+
+    frame->setContent(list);
+    return frame;
+  }
+
+  bool handleInput(
+    u64 keysDown,
+    u64 keysHeld,
+    const HidTouchState&,
+    JoystickPosition,
+    JoystickPosition
+  ) override {
+    // Ignore the opening chord briefly, as in MHGU Overlay.
+    if (
+      std::chrono::steady_clock::now() - g_shown_at >=
+        std::chrono::milliseconds(300) &&
+      (keysDown & HidNpadButton_Down) && (keysHeld & HidNpadButton_L)
+    ) {
+      tsl::Overlay::get()->hide();
+      return true;
+    }
+    if (keysDown & HidNpadButton_B) {
+      tsl::goBack();
+      return true;
+    }
+    return false;
+  }
+
+protected:
+  virtual void populate(tsl::elm::List* list) = 0;
+  Model& model_;
+
+private:
+  std::string title_;
+  bool requires_game_;
+};
+
+template <typename Gui, typename... Args>
+tsl::elm::ListItem*
+submenu_item(Model& model, const std::string& label, Args... args) {
+  auto* item = new tsl::elm::ListItem(label);
+  item->setClickListener([model_ptr = &model, args...](u64 keys) {
+    if ((keys & HidNpadButton_A) == 0) {
+      return false;
+    }
+    tsl::changeTo<Gui>(*model_ptr, args...);
+    return true;
+  });
+  return item;
+}
+
+tsl::elm::ListItem* numeric_item(
+  const std::string& label, int& value, int minimum, int maximum, int largeStep
+) {
+  auto* item = new tsl::elm::ListItem(label);
+  item->setValue(std::to_string(value));
+  item->setClickListener(
+    [item, value_ptr = &value, minimum, maximum, largeStep](u64 keys) {
+      int delta{};
+      if (keys & HidNpadButton_AnyLeft) {
+        delta = -1;
+      } else if (keys & HidNpadButton_AnyRight) {
+        delta = 1;
+      } else if (keys & HidNpadButton_L) {
+        delta = -largeStep;
+      } else if (keys & HidNpadButton_R) {
+        delta = largeStep;
+      } else {
+        return false;
+      }
+      *value_ptr = std::clamp(*value_ptr + delta, minimum, maximum);
+      item->setValue(std::to_string(*value_ptr));
+      return true;
+    }
+  );
+  return item;
+}
+
+tsl::elm::ListItem* action_item(
+  Model& model, const std::string& label, std::function<void()> action
+) {
+  auto* item = new tsl::elm::ListItem(label);
+  item->setClickListener([model_ptr = &model,
+                          action = std::move(action)](u64 keys) {
+    if ((keys & HidNpadButton_A) == 0) {
+      return false;
+    }
+    model_ptr->apply(action);
+    return true;
+  });
+  return item;
+}
+
+void category_header(tsl::elm::List* list, std::string title) {
+  list->addItem(
+    new tsl::elm::CustomDrawer(
+      [title = std::move(title)](
+        tsl::gfx::Renderer* renderer, u16 x, u16 y, u16, u16
+      ) {
+        renderer->drawString(
+          title.c_str(),
+          false,
+          x + 8,
+          y + 30,
+          19,
+          renderer->a({0xC, 0xC, 0xC, 0xF})
+        );
+      }
+    ),
+    45
+  );
+}
