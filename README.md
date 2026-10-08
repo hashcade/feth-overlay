@@ -1,149 +1,86 @@
-# Fire Emblem: Three Houses - Utility Overlays
+# FETH Overlay
 
-## Item Trainer
-![item trainer demo](docs/images/items.gif)
+[![build](https://github.com/jinghaihan/feth-overlay/actions/workflows/build.yml/badge.svg)](https://github.com/jinghaihan/feth-overlay/actions/workflows/build.yml)
 
-## Class Edit
-![class edit demo](docs/images/class.gif)
+An in-game overlay for Fire Emblem: Three Houses v1.2.0. Item, class, and
+support editing are available from a single menu.
 
-## Support Edit
-![support edit demo](docs/images/support.gif)
+## Features
 
----
+| Menu | Features |
+| --- | --- |
+| Item Trainer | Add or edit a specific Convoy item, or adjust owned items by category. |
+| Class Edit | Toggle unlocked classes for each roster character. |
+| Support Edit | Edit support points between characters. |
 
-# Details about the Item Trainer
-* This overlay allows the user to manually add or edit items in the Convoy using the ID assigned to that item.
-* It also has shortcuts to set certain categories of items to x99 stock in the Convoy.
+Quick edits affect owned items by default, set amounts to 99, and leave
+existing durability unchanged. Enable **Add Missing Items** or **Durability
+to 100** when needed. Newly added items default to 100 durability.
 
-## Select Specific Item to Edit
-* This will add the item to the Convoy if not owned already, or update the item if it exists already.
-* When a new item is added, the Convoy amount number will increase, refresh the menu by scrolling to another tab and back to see the added item.
-* An item in a unit's inventory counts as it not being in the Convoy.
+See the [item ID list](docs/feth_item_ids.txt) when adding a specific item.
+Changes affect the running game; save in-game to keep them.
 
-![Quick Edit Example](docs/images/Example1.jpg)
+## Requirements
 
-### Item ID
-* Set 4 digit ID for the item you want to add/edit.
-* [Refer to the text file for a listing of all item IDs.](docs/feth_item_ids.txt)
-* Only weapons/equipment/item IDs should be used. Dishes/gambits/magic IDs will just take up a Convoy slot and not be visible in-game.
+- Fire Emblem: Three Houses v1.2.0
+- Atmosphère with `dmnt:cht`
+- Tesla Menu or Ultrahand with an overlay loader
 
-### Item Durability
-* All items have a durability count attached to them.
-* Consumables can be set beyond their max, and a unit can carry the whole stack. Useful for quickly eating Stat Boosters.
-* Setting it to 100 can make weapons infinite use, this is normally applied for Equipment and Broken/Rusty weapons. For consumables, the number will decrease when using.
-* Same items stack together in the Convoy depending on Durability. So to make sure Equipment (Rings, Shields, etc) stack properly, have the durability set to 100 for those.
+## Install
 
-### Item Amount
-* This is how many of the item is to be made or edited to.
+1. Download `feth-overlay.ovl` from the
+   [releases](https://github.com/jinghaihan/feth-overlay/releases).
+2. Copy it to `sdmc:/switch/.overlays/feth-overlay.ovl`.
+3. Remove the old Item Trainer, Class Edit, and Support Edit `.ovl` files if
+   they are installed.
+4. Start the game, open your overlay menu, and select **FETH Overlay**.
 
-## Quick Edit Multiple Items
-* This menu will quickly let you set certain item categories you already have in your Convoy to x99. With certain options togglable.
-* To keep things "clean", leave the options to the defaults to only boost existing items to x99 when pressing each category.
+## Controls
 
-![Quick Edit Example](docs/images/Example2.jpg)
+- **A** opens a submenu, toggles a setting, or applies an edit.
+- **B** returns to the previous menu.
+- **Left/Right** adjusts a numeric value by 1.
+- **L/R** adjusts item IDs and support points by 100, or durability and
+  quantities by 10.
+- **L + Down** hides the overlay and keeps the current menu open for next time.
 
-### Items to Edit
-```
-Only Owned (Default)
-Add ALL
-```
-* The default makes it so only items in the Convoy are affected.
-* 'Add ALL' will force add any missing items for each category, but with a Side Effect mentioned next in Durability.
+Quick-edit settings and selected item values stay in place while the overlay
+is loaded. They reset when it is unloaded.
 
-### Durability --> 100
-```
-Off (Default)
-On
-```
-* Setting this to 'On' will make whatever you're updating to 100 Durability.
-* When doing a batch edit with 'Add ALL' on, new items will be added at 100 Durability even if this is set to 'Off'.
+## Documentation
 
-### Amount --> 99
-```
-On (Default)
-Off
-```
-* Setting this to 'Off" is only good for batch adding new items, which will make only x1 stock.
+- [Development guide](docs/development.md): building and contributing.
+- [Item ID list](docs/feth_item_ids.txt): IDs for the Convoy editor.
 
-## The Quick Edit Buttons
-* Pressing each category will update the items in the Convoy depending on the above options set.
+## Credits
 
-**Potions**
-```
-1000 - Vulnerary
-1001 - Concoction
-1002 - Elixir
-1011 - Antitoxin
-1012 - Pure Water
-```
+- [3096/feth-overlays](https://github.com/3096/feth-overlays): the original
+  Item Trainer, Class Edit, and Support Edit overlays. This project retains
+  and adapts their game data, memory layouts, and editing logic.
+- **Jacien**: supported the original project and provided game information
+  and testing.
+- [Falo's Three Houses save editor work](https://gbatemp.net/threads/fire-emblem-three-houses-general-hacking.544144/post-8948080):
+  game-data research credited by the original overlays.
+- [jinghaihan/mhgu-overlay](https://github.com/jinghaihan/mhgu-overlay):
+  project organization, shared menu styling, and numeric-control design.
+- [WerWolv/libtesla](https://github.com/WerWolv/libtesla): the original Tesla
+  UI runtime.
+- [minazuki19/libtesla](https://github.com/minazuki19/libtesla): the libtesla
+  fork used by this overlay, including its layout, theme, and font support.
+- [Atmosphere-NX/Atmosphere-libs](https://github.com/Atmosphere-NX/Atmosphere-libs):
+  the official `dmnt:cht` client used to access the running game.
 
-**Exam Seals**
-```
-1003 - Intermediate Seal
-1004 - Advanced Seal
-1006 - Master Seal
-1157 - Dark Seal
-1158 - Beginner Seal
-1159 - Abyssian Exam Pass
-```
+Fire Emblem and related names are trademarks of Nintendo. This unofficial
+project is not affiliated with or endorsed by Nintendo or Intelligent Systems.
 
-**Keys**
-```
-1013 - Door Key
-1014 - Chest Key
-1015 - Master Key
-````
+## License
 
-**Gold Bars**
-```
-1008 - Bullion
-1009 - Large Bullion
-1010 - Extra Large Bullion
-```
+Original FETH code and its derivatives retain [GPL-2.0](LICENSE). Original
+contributions by [jinghaihan](https://github.com/jinghaihan), marked with
+`SPDX-License-Identifier: MIT`, are covered by [MIT](LICENSE-MIT). Dependencies
+and upstream assets retain their respective licenses and authorship.
 
-**Stat Boosters**
-```
-1016 - Seraph Robe
-1017 - Energy Drop
-1018 - Spirit Dust
-1019 - Secret Book
-1020 - Speedwing
-1021 - Goddess Icon
-1022 - Giant Shell
-1023 - Talisman
-1024 - Black Pearl
-1025 - Shoes of the Wind
-1051 - Sacred Galewind Shoes
-1052 - Sacred Floral Robe
-1053 - Sacred Snowmelt Drop
-1054 - Sacred Moonstone
-1148 - Rocky Burdock
-1149 - Premium Magic Herbs
-1150 - Ailell Pomegranate
-1151 - Speed Carrot
-1152 - Miracle Bean
-1153 - Ambrosia
-1154 - White Verona
-1155 - Golden Apple
-1156 - Fruit of Life
-```
+The combined overlay is distributed under GPL-2.0; the MIT license does not
+relicense upstream code or assets.
 
-**Anna Quest Item**
-```
-1161 - Trade Secret
-```
-
-# Credit
-
-**Jacien** - for being the benefactor of this project as well as providing info and testing. This project would not have taken place without him.
-
-Falo on GBAtemp - for info from his work on the save editor
-
-# Building
-
-```sh
-git submodule update --init --recursive
-make -C item-trainer
-make -C class-edit
-make -C support-viewer
-```
+<!-- SPDX-License-Identifier: MIT; Copyright (c) 2026 Jing Haihan -->
