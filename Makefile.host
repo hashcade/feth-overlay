@@ -6,15 +6,21 @@ CXXFLAGS ?= -std=c++20 -Wall -Wextra -Werror -pedantic -O2
 
 HOST_BUILD := .build-host
 CORE_SOURCES := source/core/catalog.cpp source/core/engine.cpp
+LOCALIZATION_SOURCES := source/core/locale.cpp source/core/messages.cpp source/generated/names.cpp
 
 .PHONY: test clean-host
 
-test: $(HOST_BUILD)/core-tests
+test: $(HOST_BUILD)/core-tests $(HOST_BUILD)/localization-tests
 	@$(HOST_BUILD)/core-tests
+	@$(HOST_BUILD)/localization-tests
 
 $(HOST_BUILD)/core-tests: $(CORE_SOURCES) tests/core_tests.cpp $(wildcard include/feth/core/*.hpp)
 	@mkdir -p $(HOST_BUILD)
 	$(CXX) $(CXXFLAGS) -Iinclude $(CORE_SOURCES) tests/core_tests.cpp -o $@
+
+$(HOST_BUILD)/localization-tests: $(LOCALIZATION_SOURCES) source/core/catalog.cpp tests/localization_tests.cpp $(wildcard include/feth/core/*.hpp)
+	@mkdir -p $(HOST_BUILD)
+	$(CXX) $(CXXFLAGS) -Iinclude $(LOCALIZATION_SOURCES) source/core/catalog.cpp tests/localization_tests.cpp -o $@
 
 clean-host:
 	rm -rf $(HOST_BUILD)

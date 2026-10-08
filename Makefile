@@ -12,6 +12,7 @@ TARGET := feth-overlay
 BUILD := build
 SOURCES := \
 	source/core \
+	source/generated \
 	source/app \
 	source/ui \
 	libs/Atmosphere-libs/libstratosphere/source/dmnt
