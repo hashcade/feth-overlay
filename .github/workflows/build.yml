@@ -1,0 +1,33 @@
+name: build
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  host-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          submodules: recursive
+      - run: make test
+
+  overlays:
+    runs-on: ubuntu-latest
+    container: devkitpro/devkita64:latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          submodules: recursive
+      - name: Build and package overlays
+        run: make -j2 package
+      - uses: actions/upload-artifact@v7
+        with:
+          name: feth-overlays
+          path: output/feth-overlays.zip
+          if-no-files-found: error
