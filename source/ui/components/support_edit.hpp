@@ -1,5 +1,6 @@
-// SPDX-License-Identifier: MIT
-// Copyright (c) 2026 Jing Haihan
+// SPDX-License-Identifier: GPL-2.0-only
+// Derived from 3096/feth-overlays.
+// Modifications Copyright (c) 2026 Jing Haihan
 
 #pragma once
 
