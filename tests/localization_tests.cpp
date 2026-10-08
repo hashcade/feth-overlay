@@ -75,8 +75,7 @@ int main() {
   assert(ui_text("Support Edit", Locale::Japanese) == "支援編集");
   for (const auto* label :
        {"Class Unlocks",
-        "Ability Edit",
-        "Learned Abilities",
+        "Ability Learning",
         "Learned",
         "Not Learned",
         "Battalion Edit",

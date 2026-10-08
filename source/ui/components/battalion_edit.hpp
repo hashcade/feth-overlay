@@ -133,7 +133,7 @@ protected:
       })
     );
     list->addItem(
-      action_item(model_, text(model_, "Add Missing Battalions"), [] {
+      action_item(model_, text(model_, "Complete Battalion Collection"), [] {
         game::addMissingBattalions();
       })
     );

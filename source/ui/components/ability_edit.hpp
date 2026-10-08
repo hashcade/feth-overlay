@@ -8,7 +8,7 @@ public:
     : MenuGui(
         model,
         core::character_name(entry.name, model.display_locale()) + " - " +
-          text(model, "Learned Abilities")
+          text(model, "Ability Learning")
       ),
       entry_(std::move(entry)) {}
 
@@ -39,7 +39,7 @@ private:
 class AbilityEditGui final : public MenuGui {
 public:
   explicit AbilityEditGui(Model& model)
-    : MenuGui(model, "Ability Edit") {}
+    : MenuGui(model, "Ability Learning") {}
 
 protected:
   void populate(tsl::elm::List* list) override {
