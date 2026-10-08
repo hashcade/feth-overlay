@@ -3,6 +3,7 @@
 
 #include "feth/app/model.hpp"
 #include "feth/core/game_session.hpp"
+#include "feth/core/messages.hpp"
 
 #include <exception>
 
@@ -10,6 +11,7 @@ namespace feth::app {
 
 void Model::start() {
   initialized_ = core::initialize();
+  detected_locale_ = core::detect_locale();
   refresh();
 }
 
@@ -21,6 +23,7 @@ void Model::stop() {
 }
 
 bool Model::refresh() {
+  error_.clear();
   if (!initialized_) {
     status_ = "Cheat service unavailable";
     return false;
@@ -51,15 +54,36 @@ bool Model::apply(const std::function<void()>& action) {
 }
 
 void Model::showError(const std::string& message) {
-  status_ = "Failed: " + message;
+  status_ = "Failed";
+  error_ = message;
 }
 
-const std::string& Model::status() const {
-  return status_;
+std::string Model::status() const {
+  auto result = core::ui_text(status_, display_locale());
+  if (!error_.empty()) {
+    result += ": " + error_;
+  }
+  return result;
 }
 
 ItemSettings& Model::items() {
   return items_;
+}
+
+core::Locale Model::display_locale() const {
+  return core::resolve_locale(language_mode_, detected_locale_);
+}
+
+core::LocaleMode Model::language_mode() const {
+  return language_mode_;
+}
+
+void Model::set_language(core::LocaleMode mode) {
+  language_mode_ = mode;
+}
+
+void Model::cycle_language() {
+  language_mode_ = core::next_locale_mode(language_mode_);
 }
 
 }  // namespace feth::app

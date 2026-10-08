@@ -8,6 +8,8 @@
 #include "feth/core/catalog.hpp"
 #include "feth/core/engine.hpp"
 #include "feth/core/game_session.hpp"
+#include "feth/core/messages.hpp"
+#include "feth/core/names.hpp"
 
 #include <algorithm>
 #include <chrono>
@@ -25,6 +27,7 @@ namespace core = feth::core;
 namespace game = feth::core;
 
 constexpr const char* kVersion = "v" FETH_OVERLAY_VERSION;
+constexpr const char* kSettingsPath = "sdmc:/config/feth-overlay/config.ini";
 std::chrono::steady_clock::time_point g_shown_at;
 
 // clang-format off
@@ -38,6 +41,11 @@ std::chrono::steady_clock::time_point g_shown_at;
 class FethOverlay final : public tsl::Overlay {
 public:
   void initServices() override {
+    model_.set_language(
+      core::parse_locale_mode(
+        parseValueFromIniSection(kSettingsPath, "overlay", "language")
+      )
+    );
     model_.start();
   }
 

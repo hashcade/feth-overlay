@@ -44,6 +44,50 @@ auto gameIsRunning() -> bool {
   );
 }
 
+Locale detect_locale() {
+  // Follow MHGU: prefer the console language, then the game's metadata.
+  u64 language_code{};
+  SetLanguage language{};
+  if (R_SUCCEEDED(setInitialize())) {
+    const auto result = setGetSystemLanguage(&language_code);
+    const auto mapping =
+      R_SUCCEEDED(result) ? setMakeLanguage(language_code, &language) : result;
+    setExit();
+    if (R_SUCCEEDED(mapping)) {
+      return locale_from_switch_language(static_cast<std::int32_t>(language));
+    }
+  }
+
+  if (gameIsRunning() && R_SUCCEEDED(nsInitialize())) {
+    auto control = std::make_unique<NsApplicationControlData>();
+    u64 actual_size{};
+    NacpLanguageEntry* desired{};
+    const auto result = nsGetApplicationControlData(
+      NsApplicationControlSource_Storage,
+      s_processMetadata.title_id,
+      control.get(),
+      sizeof(*control),
+      &actual_size
+    );
+    if (
+      R_SUCCEEDED(result) && actual_size >= sizeof(NacpStruct) &&
+      R_SUCCEEDED(nsGetApplicationDesiredLanguage(&control->nacp, &desired)) &&
+      desired != nullptr
+    ) {
+      const auto index =
+        desired - reinterpret_cast<const NacpLanguageEntry*>(&control->nacp);
+      nsExit();
+      if (index >= 0 && index < 16) {
+        return locale_from_switch_language(static_cast<std::int32_t>(index));
+      }
+      return Locale::English;
+    }
+    nsExit();
+  }
+
+  return Locale::English;
+}
+
 void setItemsWithIdSet(
   const std::set<ItemId>* p_itemIdSet,
   const ItemDurability* p_durabilityToSet,

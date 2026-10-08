@@ -7,14 +7,21 @@
 class SupportEditGui final : public MenuGui {
 public:
   SupportEditGui(Model& model, core::SupportEntry entry)
-    : MenuGui(model, entry.p_pair->first + " x " + entry.p_pair->second),
+    : MenuGui(
+        model,
+        core::character_name(entry.p_pair->first, model.display_locale()) +
+          " x " +
+          core::character_name(entry.p_pair->second, model.display_locale())
+      ),
       entry_(entry) {}
 
 protected:
   void populate(tsl::elm::List* list) override {
     points_ = game::getSupportPointAtIndex(entry_.index);
-    list->addItem(numeric_item("Support Points", points_, 0, 9999, 100));
-    list->addItem(action_item(model_, "Apply Support", [this] {
+    list->addItem(
+      numeric_item(text(model_, "Support Points"), points_, 0, 9999, 100)
+    );
+    list->addItem(action_item(model_, text(model_, "Apply Support"), [this] {
       game::setSupportPointAtIndex(
         entry_.index, static_cast<core::SupportPoint>(points_)
       );
@@ -29,7 +36,11 @@ private:
 class SupportListGui final : public MenuGui {
 public:
   SupportListGui(Model& model, core::SupportList entries)
-    : MenuGui(model, entries.displayName + " - Support"),
+    : MenuGui(
+        model,
+        core::character_name(entries.displayName, model.display_locale()) +
+          " - " + text(model, "Support")
+      ),
       entries_(std::move(entries)) {}
 
   void update() override {
@@ -53,7 +64,10 @@ protected:
     for (const auto& entry : entries_.list) {
       const auto& pair = *entry->p_pair;
       auto* item = new tsl::elm::ListItem(
-        entries_.displayName == pair.first ? pair.second : pair.first
+        core::character_name(
+          entries_.displayName == pair.first ? pair.second : pair.first,
+          model_.display_locale()
+        )
       );
       item->setValue(
         std::to_string(game::getSupportPointAtIndex(entry->index))
@@ -87,7 +101,11 @@ protected:
     const auto collection = core::getSupportCollection();
     for (const auto& character : collection.supportListList) {
       list->addItem(
-        submenu_item<SupportListGui>(model_, character.displayName, character)
+        submenu_item<SupportListGui>(
+          model_,
+          core::character_name(character.displayName, model_.display_locale()),
+          character
+        )
       );
     }
   }

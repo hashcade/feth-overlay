@@ -18,11 +18,41 @@ public:
 
 protected:
   void populate(tsl::elm::List* list) override {
-    list->addItem(submenu_item<ItemTrainerGui>(model_, "Item Trainer"));
-    list->addItem(submenu_item<ClassEditGui>(model_, "Class Edit"));
-    list->addItem(submenu_item<SupportGui>(model_, "Support Edit"));
+    language_item_ = new tsl::elm::ListItem(text(model_, "Language"));
+    language_item_->setValue(language_value(model_));
+    language_item_->setClickListener([this](u64 keys) {
+      if ((keys & HidNpadButton_A) == 0)
+        return false;
+      model_.cycle_language();
+      save_language(model_);
+      refresh_labels();
+      return true;
+    });
+    list->addItem(language_item_);
+
+    item_menu_ =
+      submenu_item<ItemTrainerGui>(model_, text(model_, "Item Trainer"));
+    class_menu_ =
+      submenu_item<ClassEditGui>(model_, text(model_, "Class Edit"));
+    support_menu_ =
+      submenu_item<SupportGui>(model_, text(model_, "Support Edit"));
+    list->addItem(item_menu_);
+    list->addItem(class_menu_);
+    list->addItem(support_menu_);
   }
 
 private:
+  void refresh_labels() {
+    language_item_->setText(text(model_, "Language"));
+    language_item_->setValue(language_value(model_));
+    item_menu_->setText(text(model_, "Item Trainer"));
+    class_menu_->setText(text(model_, "Class Edit"));
+    support_menu_->setText(text(model_, "Support Edit"));
+  }
+
+  tsl::elm::ListItem* language_item_{};
+  tsl::elm::ListItem* item_menu_{};
+  tsl::elm::ListItem* class_menu_{};
+  tsl::elm::ListItem* support_menu_{};
   std::chrono::steady_clock::time_point last_refresh_{};
 };

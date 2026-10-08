@@ -3,6 +3,7 @@
 
 #pragma once
 
+#include "feth/core/locale.hpp"
 #include "feth/core/types.hpp"
 
 #include <set>
@@ -12,6 +13,7 @@ namespace feth::core {
 bool initialize();
 void shutdown();
 bool gameIsRunning();
+Locale detect_locale();
 void setItemsWithIdSet(
   const std::set<core::ItemId>* ids,
   const core::ItemDurability* durability,

@@ -5,6 +5,63 @@
 
 // Included by source/ui/main.cpp inside its private UI namespace.
 
+std::string text(const Model& model, std::string_view english) {
+  return core::ui_text(english, model.display_locale());
+}
+
+std::string language_value(const Model& model) {
+  switch (model.language_mode()) {
+    case core::LocaleMode::English:
+      return "English";
+    case core::LocaleMode::SimplifiedChinese:
+      return "简体中文";
+    case core::LocaleMode::Japanese:
+      return "日本語";
+    default:
+      return text(model, "Automatic");
+  }
+}
+
+void save_language(const Model& model) {
+  mkdir("sdmc:/config", 0777);
+  mkdir("sdmc:/config/feth-overlay", 0777);
+  setIniFileValue(
+    kSettingsPath,
+    "overlay",
+    "language",
+    core::locale_mode_value(model.language_mode())
+  );
+}
+
+class LocalizedOverlayFrame final : public tsl::elm::OverlayFrame {
+public:
+  LocalizedOverlayFrame(Model& model, std::string title)
+    : OverlayFrame(std::move(title), kVersion),
+      model_(model) {}
+
+  void setTitle(std::string title) {
+    m_title = std::move(title);
+  }
+
+  void draw(tsl::gfx::Renderer* renderer) override {
+    const bool hide_footer = deactivateOriginalFooter;
+    deactivateOriginalFooter = true;
+    OverlayFrame::draw(renderer);
+    deactivateOriginalFooter = hide_footer;
+
+    if (!hide_footer) {
+      const auto footer = "\uE0E1  " + text(model_, "Back") + "     \uE0E0  " +
+                          text(model_, "OK");
+      renderer->drawString(
+        footer.c_str(), false, 30, 693, 23, renderer->a(defaultTextColor)
+      );
+    }
+  }
+
+private:
+  Model& model_;
+};
+
 class MenuGui : public tsl::Gui {
 public:
   MenuGui(Model& model, std::string title, bool requiresGame = true)
@@ -13,7 +70,7 @@ public:
       requires_game_(requiresGame) {}
 
   tsl::elm::Element* createUI() override {
-    auto* frame = new tsl::elm::OverlayFrame(title_, kVersion);
+    frame_ = new LocalizedOverlayFrame(model_, text(model_, title_));
     auto* list = new tsl::elm::List(6);
 
     list->addItem(
@@ -41,8 +98,8 @@ public:
       }
     }
 
-    frame->setContent(list);
-    return frame;
+    frame_->setContent(list);
+    return frame_;
   }
 
   bool handleInput(
@@ -71,6 +128,7 @@ public:
 protected:
   virtual void populate(tsl::elm::List* list) = 0;
   Model& model_;
+  LocalizedOverlayFrame* frame_{};
 
 private:
   std::string title_;

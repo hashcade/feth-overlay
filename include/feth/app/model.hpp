@@ -3,6 +3,7 @@
 
 #pragma once
 
+#include "feth/core/locale.hpp"
 #include "feth/core/types.hpp"
 
 #include <functional>
@@ -27,13 +28,20 @@ public:
   bool apply(const std::function<void()>& action);
   void showError(const std::string& message);
 
-  const std::string& status() const;
+  std::string status() const;
   ItemSettings& items();
+  core::Locale display_locale() const;
+  core::LocaleMode language_mode() const;
+  void set_language(core::LocaleMode mode);
+  void cycle_language();
 
 private:
   bool initialized_{};
   std::string status_;
+  std::string error_;
   ItemSettings items_;
+  core::Locale detected_locale_{core::Locale::English};
+  core::LocaleMode language_mode_{core::LocaleMode::Auto};
 };
 
 }  // namespace feth::app

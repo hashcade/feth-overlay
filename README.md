@@ -9,6 +9,10 @@
 An in-game overlay for Fire Emblem: Three Houses v1.2.0. Item, class, and
 support editing are available from a single menu.
 
+English, Simplified Chinese, and Japanese are supported. The language follows
+your console by default; choose **Language** in the main menu to override it.
+Your language choice is remembered between sessions.
+
 ## Features
 
 | Menu | Features |
@@ -47,6 +51,7 @@ Changes affect the running game; save in-game to keep them.
 - **L/R** adjusts item IDs and support points by 100, or durability and
   quantities by 10.
 - **L + Down** hides the overlay and keeps the current menu open for next time.
+- The item editor shows the localized name for the selected item ID.
 
 Quick-edit settings and selected item values stay in place while the overlay
 is loaded. They reset when it is unloaded.
@@ -66,7 +71,11 @@ is loaded. They reset when it is unloaded.
 - [Falo's Three Houses save editor work](https://gbatemp.net/threads/fire-emblem-three-houses-general-hacking.544144/post-8948080):
   game-data research credited by the original overlays.
 - [jinghaihan/mhgu-overlay](https://github.com/jinghaihan/mhgu-overlay):
-  project organization, shared menu styling, and numeric-control design.
+  project organization, shared menu styling, numeric controls, and automatic
+  language detection.
+- [jinghaihan/feth-save-editor](https://github.com/jinghaihan/feth-save-editor):
+  the English, Simplified Chinese, and Japanese item, class, and character names
+  exported from its game database, originally provided by imouto1994 and Falo.
 - [WerWolv/libtesla](https://github.com/WerWolv/libtesla): the original Tesla
   UI runtime.
 - [minazuki19/libtesla](https://github.com/minazuki19/libtesla): the libtesla

@@ -10,9 +10,10 @@ LOCALIZATION_SOURCES := source/core/locale.cpp source/core/messages.cpp source/g
 
 .PHONY: test clean-host
 
-test: $(HOST_BUILD)/core-tests $(HOST_BUILD)/localization-tests
+test: $(HOST_BUILD)/core-tests $(HOST_BUILD)/localization-tests $(HOST_BUILD)/model-tests
 	@$(HOST_BUILD)/core-tests
 	@$(HOST_BUILD)/localization-tests
+	@$(HOST_BUILD)/model-tests
 
 $(HOST_BUILD)/core-tests: $(CORE_SOURCES) tests/core_tests.cpp $(wildcard include/feth/core/*.hpp)
 	@mkdir -p $(HOST_BUILD)
@@ -21,6 +22,10 @@ $(HOST_BUILD)/core-tests: $(CORE_SOURCES) tests/core_tests.cpp $(wildcard includ
 $(HOST_BUILD)/localization-tests: $(LOCALIZATION_SOURCES) source/core/catalog.cpp tests/localization_tests.cpp $(wildcard include/feth/core/*.hpp)
 	@mkdir -p $(HOST_BUILD)
 	$(CXX) $(CXXFLAGS) -Iinclude $(LOCALIZATION_SOURCES) source/core/catalog.cpp tests/localization_tests.cpp -o $@
+
+$(HOST_BUILD)/model-tests: source/app/model.cpp source/core/locale.cpp source/core/messages.cpp tests/model_tests.cpp $(wildcard include/feth/core/*.hpp) $(wildcard include/feth/app/*.hpp)
+	@mkdir -p $(HOST_BUILD)
+	$(CXX) $(CXXFLAGS) -Iinclude source/app/model.cpp source/core/locale.cpp source/core/messages.cpp tests/model_tests.cpp -o $@
 
 clean-host:
 	rm -rf $(HOST_BUILD)
