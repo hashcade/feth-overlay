@@ -94,6 +94,10 @@ Only the two resource fields are written. Their input limits match the editor:
 
 ## Releases
 
+From a clean, synchronized `main` branch, run `uv run scripts/release.py patch`
+(or `minor` / `major`). The script updates `VERSION`, creates the release commit
+and annotated tag, and pushes them together.
+
 Tags matching `v<VERSION>` build and publish the single `feth-overlay.ovl`.
 Record the hardware-testing status in the release notes.
 
