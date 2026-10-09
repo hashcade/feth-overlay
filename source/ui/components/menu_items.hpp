@@ -100,11 +100,22 @@ public:
             x + 8,
             y + 30,
             19,
-            renderer->a({0xC, 0xC, 0xC, 0xF})
+            renderer->a({0xF, 0xF, 0xF, 0xF})
           );
+          const auto game_version = model_.game_version();
+          if (!game_version.empty()) {
+            renderer->drawString(
+              game_version.c_str(),
+              false,
+              x + 8,
+              y + 58,
+              15,
+              renderer->a({0x8, 0xB, 0xB, 0xF})
+            );
+          }
         }
       ),
-      55
+      70
     );
 
     const bool ready = model_.refresh();

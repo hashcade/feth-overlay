@@ -29,6 +29,7 @@ public:
   void showError(const std::string& message);
 
   std::string status() const;
+  std::string game_version() const;
   ItemSettings& items();
   core::Locale display_locale() const;
   core::LocaleMode language_mode() const;
@@ -38,6 +39,7 @@ public:
 private:
   bool initialized_{};
   std::string status_;
+  std::string game_version_;
   std::string error_;
   ItemSettings items_;
   core::Locale detected_locale_{core::Locale::English};

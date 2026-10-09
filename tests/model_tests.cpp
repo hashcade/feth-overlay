@@ -33,6 +33,7 @@ int main() {
   model.start();
   assert(model.display_locale() == feth::core::Locale::SimplifiedChinese);
   assert(model.status() == "请启动风花雪月 v1.2.0");
+  assert(model.game_version().empty());
   bool called{};
   assert(!model.apply([&] { called = true; }));
   assert(!called);
@@ -49,7 +50,8 @@ int main() {
   model.set_language(feth::core::LocaleMode::Auto);
   assert(model.status() == "失败: 0x1234");
   assert(model.refresh());
-  assert(model.status() == "风花雪月 v1.2.0 已就绪");
+  assert(model.status() == "已就绪");
+  assert(model.game_version() == "风花雪月 v1.2.0");
   model.stop();
   assert(stopped);
   std::cout << "Model localization checks passed\n";

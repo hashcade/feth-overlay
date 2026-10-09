@@ -24,6 +24,7 @@ void Model::stop() {
 
 bool Model::refresh() {
   error_.clear();
+  game_version_.clear();
   if (!initialized_) {
     status_ = "Cheat service unavailable";
     return false;
@@ -34,7 +35,8 @@ bool Model::refresh() {
     return false;
   }
 
-  status_ = "Three Houses v1.2.0 ready";
+  status_ = "Ready";
+  game_version_ = "Three Houses v1.2.0";
   return true;
 }
 
@@ -64,6 +66,10 @@ std::string Model::status() const {
     result += ": " + error_;
   }
   return result;
+}
+
+std::string Model::game_version() const {
+  return core::ui_text(game_version_, display_locale());
 }
 
 ItemSettings& Model::items() {
