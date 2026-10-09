@@ -73,8 +73,5 @@ private:
 }  // namespace
 
 int main(int argc, char** argv) {
-  // Match MHGU's 640px menu without allocating its full-width hunting HUD.
-  framebufferWidth = 640;
-  framebufferHeight = 720;
   return tsl::loop<FethOverlay>(argc, argv);
 }

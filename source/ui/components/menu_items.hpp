@@ -44,17 +44,35 @@ public:
   }
 
   void draw(tsl::gfx::Renderer* renderer) override {
-    const bool hide_footer = deactivateOriginalFooter;
-    deactivateOriginalFooter = true;
-    OverlayFrame::draw(renderer);
-    deactivateOriginalFooter = hide_footer;
+    renderer->fillScreen(renderer->a({0x0, 0x0, 0x0, alphabackground}));
 
-    if (!hide_footer) {
+    renderer->drawString(
+      m_title.c_str(), false, 20, 50, 30, {0xF, 0xF, 0xF, 0xF}
+    );
+    renderer->drawString(
+      m_subtitle.c_str(), false, 20, 70, 15, {0xC, 0xC, 0xC, 0xF}
+    );
+
+    if (FullMode) {
+      renderer->drawRect(
+        15,
+        tsl::cfg::FramebufferHeight - 73,
+        tsl::cfg::FramebufferWidth - 30,
+        1,
+        {0xF, 0xF, 0xF, 0xF}
+      );
+    }
+
+    if (!deactivateOriginalFooter) {
       const auto footer = "\uE0E1  " + text(model_, "Back") + "     \uE0E0  " +
                           text(model_, "OK");
       renderer->drawString(
-        footer.c_str(), false, 30, 693, 23, renderer->a(defaultTextColor)
+        footer.c_str(), false, 30, 693, 23, {0xF, 0xF, 0xF, 0xF}
       );
+    }
+
+    if (m_contentElement != nullptr) {
+      m_contentElement->frame(renderer);
     }
   }
 
