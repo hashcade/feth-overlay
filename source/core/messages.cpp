@@ -62,7 +62,6 @@ constexpr const char* kMessages[][3] = {
   {"Start Three Houses v1.2.0",
    "请启动风花雪月 v1.2.0",
    "風花雪月 v1.2.0 を起動してください"},
-  {"Ready", "已就绪", "準備完了"},
   {"Three Houses v1.2.0", "风花雪月 v1.2.0", "風花雪月 v1.2.0"},
   {"Changes applied", "修改已应用", "変更を適用しました"},
   {"Failed", "失败", "失敗"},

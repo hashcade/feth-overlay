@@ -50,7 +50,7 @@ int main() {
   model.set_language(feth::core::LocaleMode::Auto);
   assert(model.status() == "失败: 0x1234");
   assert(model.refresh());
-  assert(model.status() == "已就绪");
+  assert(model.status().empty());
   assert(model.game_version() == "风花雪月 v1.2.0");
   model.stop();
   assert(stopped);

@@ -35,7 +35,7 @@ bool Model::refresh() {
     return false;
   }
 
-  status_ = "Ready";
+  status_.clear();
   game_version_ = "Three Houses v1.2.0";
   return true;
 }

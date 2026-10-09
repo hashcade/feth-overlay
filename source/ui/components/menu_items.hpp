@@ -94,28 +94,30 @@ public:
     list->addItem(
       new tsl::elm::CustomDrawer(
         [this](tsl::gfx::Renderer* renderer, u16 x, u16 y, u16, u16) {
-          renderer->drawString(
-            model_.status().c_str(),
-            false,
-            x + 8,
-            y + 30,
-            19,
-            renderer->a({0xF, 0xF, 0xF, 0xF})
-          );
-          const auto game_version = model_.game_version();
-          if (!game_version.empty()) {
+          const auto status = model_.status();
+          if (!status.empty()) {
+            renderer->drawString(
+              status.c_str(),
+              false,
+              x + 8,
+              y + 30,
+              19,
+              renderer->a({0xF, 0xF, 0xF, 0xF})
+            );
+          } else {
+            const auto game_version = model_.game_version();
             renderer->drawString(
               game_version.c_str(),
               false,
               x + 8,
-              y + 58,
+              y + 30,
               15,
               renderer->a({0x8, 0xB, 0xB, 0xF})
             );
           }
         }
       ),
-      70
+      42
     );
 
     const bool ready = model_.refresh();
