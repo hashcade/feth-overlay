@@ -6,6 +6,7 @@
 #include "feth/core/game_profile.hpp"
 #include "feth/core/items.hpp"
 
+#include <bit>
 #include <cassert>
 #include <iostream>
 #include <set>
@@ -42,6 +43,24 @@ int main() {
          {Locale::English, Locale::SimplifiedChinese, Locale::Japanese})
       assert(!ability_name(id, locale).empty());
   }
+
+  // Sword Avo +20 is an ability flag, not a weapon-skill rank or experience.
+  assert(ability_name(56, Locale::SimplifiedChinese) == "剑回避+20");
+  Character character{};
+  character.skillExps.fill(1234);
+  using CharacterBytes = std::array<std::uint8_t, sizeof(Character)>;
+  const auto before_ability = std::bit_cast<CharacterBytes>(character);
+  set_ability_learned(character.abilities, 56, true);
+  assert(ability_is_learned(character.abilities, 56));
+  const auto after_ability = std::bit_cast<CharacterBytes>(character);
+  for (std::size_t index = 0; index < after_ability.size(); ++index) {
+    if (index == 0x68)
+      assert(after_ability[index] == 1);
+    else
+      assert(after_ability[index] == before_ability[index]);
+  }
+  set_ability_learned(character.abilities, 56, false);
+  assert(std::bit_cast<CharacterBytes>(character) == before_ability);
 
   BattalionArray battalions{};
   battalions.fill({-1, 0, 0, EMPTY_BATTALION_TYPE, 80});
