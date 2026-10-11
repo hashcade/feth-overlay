@@ -84,35 +84,6 @@ public:
     frame_ = new LocalizedOverlayFrame(model_, text(model_, title_));
     auto* list = new tsl::elm::List(6);
 
-    list->addItem(
-      new tsl::elm::CustomDrawer(
-        [this](tsl::gfx::Renderer* renderer, u16 x, u16 y, u16, u16) {
-          const auto status = model_.status();
-          if (!status.empty()) {
-            renderer->drawString(
-              status.c_str(),
-              false,
-              x + 8,
-              y + 30,
-              19,
-              renderer->a({0xF, 0xF, 0xF, 0xF})
-            );
-          } else {
-            const auto game_version = model_.game_version();
-            renderer->drawString(
-              game_version.c_str(),
-              false,
-              x + 8,
-              y + 30,
-              15,
-              renderer->a({0x8, 0xB, 0xB, 0xF})
-            );
-          }
-        }
-      ),
-      42
-    );
-
     const bool ready = model_.refresh();
     if (ready || !requires_game_) {
       try {
