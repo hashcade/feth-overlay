@@ -36,7 +36,7 @@ void save_language(const Model& model) {
 class LocalizedOverlayFrame final : public tsl::elm::OverlayFrame {
 public:
   LocalizedOverlayFrame(Model& model, std::string title)
-    : OverlayFrame(std::move(title), ""),
+    : OverlayFrame(std::move(title), kVersion),
       model_(model) {}
 
   void setTitle(std::string title) {
@@ -45,6 +45,13 @@ public:
 
   void draw(tsl::gfx::Renderer* renderer) override {
     renderer->fillScreen(renderer->a({0x0, 0x0, 0x0, alphabackground}));
+
+    renderer->drawString(
+      m_title.c_str(), false, 20, 50, 30, {0xF, 0xF, 0xF, 0xF}
+    );
+    renderer->drawString(
+      m_subtitle.c_str(), false, 20, 70, 15, {0xC, 0xC, 0xC, 0xF}
+    );
 
     if (FullMode) {
       renderer->drawRect(

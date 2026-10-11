@@ -20,7 +20,8 @@ git submodule update --init --recursive
 make -j2
 ```
 
-The result is `feth-overlay.ovl`. `VERSION` supplies the overlay metadata version.
+The result is `feth-overlay.ovl`. `VERSION` supplies the version shown in the
+menu and the overlay metadata.
 
 Without a local devkitPro installation:
 

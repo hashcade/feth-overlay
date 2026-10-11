@@ -27,6 +27,7 @@ using feth::app::Model;
 namespace core = feth::core;
 namespace game = feth::core;
 
+constexpr const char* kVersion = "v" FETH_OVERLAY_VERSION;
 constexpr const char* kSettingsPath = "sdmc:/config/feth-overlay/config.ini";
 std::chrono::steady_clock::time_point g_shown_at;
 
