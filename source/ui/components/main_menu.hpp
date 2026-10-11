@@ -37,7 +37,7 @@ protected:
     class_menu_ =
       submenu_item<ClassEditGui>(model_, text(model_, "Class Unlocks"));
     ability_menu_ =
-      submenu_item<AbilityEditGui>(model_, text(model_, "Ability Unlocks"));
+      submenu_item<AbilityEditGui>(model_, text(model_, "Abilities"));
     support_menu_ =
       submenu_item<SupportGui>(model_, text(model_, "Support Edit"));
     battalion_menu_ =
@@ -57,7 +57,7 @@ private:
     resources_menu_->setText(text(model_, "Resources"));
     item_menu_->setText(text(model_, "Item Trainer"));
     class_menu_->setText(text(model_, "Class Unlocks"));
-    ability_menu_->setText(text(model_, "Ability Unlocks"));
+    ability_menu_->setText(text(model_, "Abilities"));
     support_menu_->setText(text(model_, "Support Edit"));
     battalion_menu_->setText(text(model_, "Battalion Edit"));
   }

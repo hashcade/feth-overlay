@@ -79,7 +79,7 @@ int main() {
         "Renown",
         "Apply Changes",
         "Class Unlocks",
-        "Ability Unlocks",
+        "Abilities",
         "Learned",
         "Not Learned",
         "Battalion Edit",
