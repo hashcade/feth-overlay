@@ -83,6 +83,9 @@ public:
 protected:
   void populate(tsl::elm::List* list) override {
     list->addItem(
+      submenu_item<OwnedItemsGui>(model_, text(model_, "Owned Items"))
+    );
+    list->addItem(
       submenu_item<SetItemGui>(model_, text(model_, "Set Specific Item"))
     );
     list->addItem(
@@ -134,7 +137,7 @@ protected:
       ));
     }
 
-    list->addItem(action_item(model_, text(model_, "Owned Items"), [this] {
+    list->addItem(action_item(model_, text(model_, "Apply to Owned Items"), [this] {
       applyItems(nullptr, false);
     }));
   }

@@ -167,6 +167,24 @@ template <typename T> void write_game(std::size_t offset, const T& value) {
 }
 }  // namespace
 
+std::vector<Item> getConvoyItems() {
+  TRY_THROW(!gameIsRunning());
+  const auto items = read_game<ItemArray>(ITEM_OFFSET);
+  const auto count = read_game<ItemCount>(ITEM_COUNT_OFFSET);
+  return {items.begin(), items.begin() + count};
+}
+
+Item getConvoyItem(std::size_t index) {
+  TRY_THROW(!gameIsRunning());
+  return read_game<Item>(ITEM_OFFSET + index * sizeof(Item));
+}
+
+void setConvoyItem(std::size_t index, const Item& item) {
+  if (!gameIsRunning())
+    return;
+  write_game(ITEM_OFFSET + index * sizeof(Item), item);
+}
+
 PlayerResources getPlayerResources() {
   TRY_THROW(!gameIsRunning());
   return {

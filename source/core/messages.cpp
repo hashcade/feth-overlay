@@ -41,6 +41,8 @@ constexpr const char* kMessages[][3] = {
   {"Refill All Durability", "补满全部耐久", "全アイテムの耐久を回復"},
   {"Amount to 99", "数量设为 99", "個数を99に設定"},
   {"Owned Items", "已持有物品", "所持アイテム"},
+  {"Apply to Owned Items", "应用到已持有物品", "所持アイテムに適用"},
+  {"Refill Durability", "补满耐久", "耐久を回復"},
   {"Potions", "回复药", "回復薬"},
   {"Exam Seals", "考试准考证", "資格試験パス"},
   {"Keys", "钥匙", "鍵"},

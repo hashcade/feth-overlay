@@ -10,6 +10,7 @@
 #include "feth/core/types.hpp"
 
 #include <set>
+#include <vector>
 
 namespace feth::core {
 
@@ -19,6 +20,9 @@ bool gameIsRunning();
 Locale detect_locale();
 void setItemsWithIdSet(const ItemEditOptions& options);
 void refillItemDurability();
+std::vector<Item> getConvoyItems();
+Item getConvoyItem(std::size_t index);
+void setConvoyItem(std::size_t index, const Item& item);
 PlayerResources getPlayerResources();
 void setPlayerResources(const PlayerResources& resources);
 BattalionArray getBattalions();
