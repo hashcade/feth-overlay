@@ -4,13 +4,13 @@
 #pragma once
 
 #include "feth/core/abilities.hpp"
+#include "feth/core/catalog.hpp"
 #include "feth/core/engine.hpp"
 #include "feth/core/locale.hpp"
 #include "feth/core/resources.hpp"
 #include "feth/core/types.hpp"
 
 #include <set>
-#include <vector>
 
 namespace feth::core {
 
@@ -18,11 +18,9 @@ bool initialize();
 void shutdown();
 bool gameIsRunning();
 Locale detect_locale();
-void setItemsWithIdSet(const ItemEditOptions& options);
+void fillItemCategory(const NamedItemIdSet& category, bool addMissing);
+void fillOwnedItemAmounts();
 void refillItemDurability();
-std::vector<Item> getConvoyItems();
-Item getConvoyItem(std::size_t index);
-void setConvoyItem(std::size_t index, const Item& item);
 PlayerResources getPlayerResources();
 void setPlayerResources(const PlayerResources& resources);
 BattalionArray getBattalions();

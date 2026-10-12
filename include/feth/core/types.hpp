@@ -28,8 +28,6 @@ constexpr auto TOTAL_ITEM_COUNT = 400;
 using ItemArray = std::array<Item, TOTAL_ITEM_COUNT>;
 using ItemCount = int32_t;
 
-static constexpr auto MAX_ITEM_ID = ItemId{0xFFFF};
-static constexpr auto MAX_ITEM_DURABILITY = ItemDurability{100};
 static constexpr auto MAX_ITEM_AMOUNT = ItemAmount{99};
 
 // roster

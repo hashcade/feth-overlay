@@ -54,4 +54,12 @@ static constexpr auto BATTALION_OFFSET =
   SUPPORT_OFFSET - sizeof(BattalionArray) - 4 * sizeof(std::uint32_t);
 static_assert(BATTALION_OFFSET == ITEM_OFFSET + 0x23C30);
 
+// Player_V23 offsets, anchored to CharacterSupportValues at 0x1080.
+static constexpr auto PLAYER_OFFSET = SUPPORT_OFFSET - 0x1080;
+static constexpr auto MISC_ITEM_OFFSET = PLAYER_OFFSET + 0x13B1;
+static constexpr auto GIFT_ITEM_OFFSET = PLAYER_OFFSET + 0x1490;
+using MiscItemCounts = std::array<ItemAmount, 223>;
+using GiftItemCounts = std::array<ItemAmount, 225>;
+static_assert(MISC_ITEM_OFFSET + sizeof(MiscItemCounts) == GIFT_ITEM_OFFSET);
+
 }  // namespace feth::core

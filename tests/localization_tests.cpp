@@ -66,8 +66,9 @@ int main() {
   for (const auto& group : NAMED_ITEM_ID_SET_LIST) {
     for (auto locale : {Locale::SimplifiedChinese, Locale::Japanese}) {
       assert(ui_text(group.name, locale) != group.name);
-      for (auto id : group.itemIdSet) {
-        assert(!item_name(id, locale).starts_with("ID "));
+      if (group.storage == ItemStorage::Convoy) {
+        for (auto id : group.itemIdSet)
+          assert(!item_name(id, locale).starts_with("ID "));
       }
     }
   }
@@ -83,7 +84,7 @@ int main() {
         "Learned",
         "Not Learned",
         "Battalion Edit",
-        "Normal Durability",
+        "Amount to 99",
         "Refill All Durability"}) {
     assert(ui_text(label, Locale::SimplifiedChinese) != label);
     assert(ui_text(label, Locale::Japanese) != label);

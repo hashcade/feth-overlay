@@ -10,9 +10,12 @@
 
 namespace feth::core {
 
+enum class ItemStorage { Convoy, Misc, Gifts };
+
 struct NamedItemIdSet {
   std::string name;
   std::set<ItemId> itemIdSet;
+  ItemStorage storage{ItemStorage::Convoy};
 };
 
 struct NamedClassId {

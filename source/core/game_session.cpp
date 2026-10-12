@@ -89,34 +89,6 @@ Locale detect_locale() {
   return Locale::English;
 }
 
-void setItemsWithIdSet(const ItemEditOptions& options) {
-  if (not gameIsRunning())
-    return;
-
-  // read items
-  auto items = ItemArray{};
-  TRY_THROW(dmntchtReadCheatProcessMemory(
-    s_processMetadata.main_nso_extents.base + ITEM_OFFSET, &items, sizeof(items)
-  ));
-  auto curItemCount = ItemCount{};
-  TRY_THROW(dmntchtReadCheatProcessMemory(
-    s_processMetadata.main_nso_extents.base + ITEM_COUNT_OFFSET,
-    &curItemCount,
-    sizeof(curItemCount)
-  ));
-
-  core::editItems(items, curItemCount, options);
-
-  TRY_THROW(dmntchtWriteCheatProcessMemory(
-    s_processMetadata.main_nso_extents.base + ITEM_OFFSET, &items, sizeof(items)
-  ));
-  TRY_THROW(dmntchtWriteCheatProcessMemory(
-    s_processMetadata.main_nso_extents.base + ITEM_COUNT_OFFSET,
-    &curItemCount,
-    sizeof(curItemCount)
-  ));
-}
-
 void refillItemDurability() {
   if (!gameIsRunning())
     return;
@@ -167,22 +139,37 @@ template <typename T> void write_game(std::size_t offset, const T& value) {
 }
 }  // namespace
 
-std::vector<Item> getConvoyItems() {
-  TRY_THROW(!gameIsRunning());
-  const auto items = read_game<ItemArray>(ITEM_OFFSET);
-  const auto count = read_game<ItemCount>(ITEM_COUNT_OFFSET);
-  return {items.begin(), items.begin() + count};
-}
-
-Item getConvoyItem(std::size_t index) {
-  TRY_THROW(!gameIsRunning());
-  return read_game<Item>(ITEM_OFFSET + index * sizeof(Item));
-}
-
-void setConvoyItem(std::size_t index, const Item& item) {
+void fillItemCategory(const NamedItemIdSet& category, bool addMissing) {
   if (!gameIsRunning())
     return;
-  write_game(ITEM_OFFSET + index * sizeof(Item), item);
+
+  switch (category.storage) {
+    case ItemStorage::Convoy: {
+      auto items = read_game<ItemArray>(ITEM_OFFSET);
+      auto count = read_game<ItemCount>(ITEM_COUNT_OFFSET);
+      fillConvoyItems(items, count, {category.itemIdSet, addMissing});
+      write_game(ITEM_OFFSET, items);
+      write_game(ITEM_COUNT_OFFSET, count);
+      break;
+    }
+    case ItemStorage::Misc: {
+      auto counts = read_game<MiscItemCounts>(MISC_ITEM_OFFSET);
+      fillItemCounts(counts, category.itemIdSet, addMissing);
+      write_game(MISC_ITEM_OFFSET, counts);
+      break;
+    }
+    case ItemStorage::Gifts: {
+      auto counts = read_game<GiftItemCounts>(GIFT_ITEM_OFFSET);
+      fillItemCounts(counts, category.itemIdSet, addMissing);
+      write_game(GIFT_ITEM_OFFSET, counts);
+      break;
+    }
+  }
+}
+
+void fillOwnedItemAmounts() {
+  for (const auto& category : NAMED_ITEM_ID_SET_LIST)
+    fillItemCategory(category, false);
 }
 
 PlayerResources getPlayerResources() {

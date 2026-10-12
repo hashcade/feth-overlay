@@ -5,67 +5,40 @@
 #include "feth/core/catalog.hpp"
 #include "feth/core/items.hpp"
 
-#include <map>
 #include <unordered_map>
 
 namespace feth::core {
 
-void editItems(
-  ItemArray& items, ItemCount& curItemCount, const ItemEditOptions& options
+void fillConvoyItems(
+  ItemArray& items, ItemCount& count, const ItemFillOptions& options
 ) {
-  const auto* p_itemIdSet = options.ids;
-  const auto* p_durabilityToSet = options.durability;
-  const auto* p_amountToSet = options.amount;
-  // make a map to keep track which item was found
-  auto foundItemMap = std::map<ItemId, bool>{};
-  if (p_itemIdSet) {
-    for (auto& itemId : *p_itemIdSet) {
-      foundItemMap[itemId] = false;
-    }
+  auto missing = options.ids;
+  for (auto& item : std::span(items).first(count)) {
+    if (!options.ids.contains(item.id))
+      continue;
+    missing.erase(item.id);
+    if (options.addMissing || item.amount > 0)
+      item.amount = MAX_ITEM_AMOUNT;
   }
 
-  // search and set existing items
-  for (ItemCount index = 0; index < curItemCount; ++index) {
-    auto& item = items[index];
-    auto itemEntryInFoundMap = foundItemMap.find(item.id);
-    auto itemIsFound = itemEntryInFoundMap != end(foundItemMap);
+  if (!options.addMissing)
+    return;
 
-    if (itemIsFound) {
-      itemEntryInFoundMap->second = true;
-    }
-
-    if (not p_itemIdSet or itemIsFound) {
-      if (p_durabilityToSet)
-        item.durability = *p_durabilityToSet;
-      if (p_amountToSet)
-        item.amount = *p_amountToSet;
-      if (options.normalDurability) {
-        if (const auto maximum = normal_item_durability(item.id)) {
-          item.durability = *maximum;
-        }
-      }
-    }
+  for (const auto id : missing) {
+    if (count == TOTAL_ITEM_COUNT)
+      break;
+    items[count++] = {
+      id, normal_item_durability(id).value_or(0), MAX_ITEM_AMOUNT
+    };
   }
+}
 
-  // take care of adding items if necessary
-  if (p_itemIdSet and options.addMissing) {
-    for (auto& foundItemMapEntry : foundItemMap) {
-      auto itemId = foundItemMapEntry.first;
-      auto itemWasFound = foundItemMapEntry.second;
-
-      if (curItemCount >= TOTAL_ITEM_COUNT) {
-        break;
-      }
-
-      if (not itemWasFound) {
-        auto durabilityToSet = p_durabilityToSet
-                                 ? *p_durabilityToSet
-                                 : normal_item_durability(itemId).value_or(0);
-        auto amountToSet = p_amountToSet ? *p_amountToSet : ItemAmount{1};
-        items[curItemCount] = {itemId, durabilityToSet, amountToSet};
-        curItemCount++;
-      }
-    }
+void fillItemCounts(
+  std::span<ItemAmount> counts, const std::set<ItemId>& ids, bool addMissing
+) {
+  for (const auto id : ids) {
+    if (addMissing || counts[id] > 0)
+      counts[id] = MAX_ITEM_AMOUNT;
   }
 }
 

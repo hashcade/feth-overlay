@@ -18,17 +18,25 @@ Your language choice is remembered between sessions.
 | Menu | Features |
 | --- | --- |
 | Resources | Edit money and renown. |
-| Item Trainer | Edit individual owned Convoy items, add items, apply category edits, or refill Convoy and carried-item durability. |
+| Item Trainer | Restore normal durability, top up owned supplies, or fill a supply category to 99. |
 | Class Unlocks | Toggle unlocked classes for each roster character. |
 | Ability Unlocks | Learn or forget abilities for each roster character. |
 | Support Edit | Edit support points between characters. |
 | Battalion Edit | Edit type, level, and current endurance for owned battalions. |
 
-Quick edits affect owned items by default, set amounts to 99, and leave
-existing durability unchanged. Enable **Add Missing Items** or **Normal
-Durability** when needed. New items use their normal maximum durability.
-**Refill All Durability** restores Convoy and character-held items to their
-individual maximums. Unknown item IDs are left unchanged.
+**Refill All Durability** restores Convoy and character-held items to each
+item's normal maximum durability.
+
+**Amount to 99** tops up owned supplies in the categories below. Missing items
+stay missing, and zero quantities stay zero. Weapons, equipment, lost items,
+and other quest items are unchanged.
+
+Each category button sets every included type to 99, adding missing supplies.
+Repeated clicks keep the quantity at 99:
+
+- Potions, exam seals, keys, stat boosters, forge materials, and gold bars.
+- Gifts (including flowers), tea, bait, seeds, and ingredients.
+- Trade Secret (Anna's quest item).
 
 Changing a battalion's type assigns its default gambit and restores its full
 endurance. Level can be adjusted from 1 to 5. Changing only type or endurance
@@ -38,7 +46,6 @@ preserves experience progress. Battalion edits also update the equipped copy.
 Toggle **Learned / Not Learned** to learn or forget an ability. Equip abilities
 from the game's own menus. Some DLC abilities are not included yet.
 
-See the [item ID list](docs/feth_item_ids.txt) when adding a specific item.
 Changes affect the running game; save in-game to keep them.
 
 ## Requirements
@@ -58,21 +65,18 @@ Changes affect the running game; save in-game to keep them.
 
 ## Controls
 
-- **A** opens a submenu, toggles a setting, or applies an edit.
+- **A** opens a submenu, toggles a setting, or applies an edit. Item actions
+  take effect when pressed.
 - **B** returns to the previous menu.
 - **Left/Right** adjusts a numeric value by 1.
-- **L/R** adjusts item IDs and support points by 100, or durability and
-  quantities by 10. Money changes by 10,000 and renown by 1,000.
+- **L/R** adjusts support points by 100 or battalion endurance by 10.
+  Money changes by 10,000 and renown by 1,000.
 - **L + Down** hides the overlay and keeps the current menu open for next time.
-- The item editor shows the localized name for the selected item ID.
-
-Quick-edit settings and selected item values stay in place while the overlay
-is loaded. They reset when it is unloaded.
 
 ## Documentation
 
 - [Development guide](docs/development.md): building and contributing.
-- [Item ID list](docs/feth_item_ids.txt): IDs for the Convoy editor.
+- [Item ID list](docs/feth_item_ids.txt): Convoy item reference.
 
 ## Credits
 

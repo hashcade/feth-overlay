@@ -72,10 +72,6 @@ std::string Model::game_version() const {
   return core::ui_text(game_version_, display_locale());
 }
 
-ItemSettings& Model::items() {
-  return items_;
-}
-
 core::Locale Model::display_locale() const {
   return core::resolve_locale(language_mode_, detected_locale_);
 }

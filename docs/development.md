@@ -74,6 +74,20 @@ the save editor's `fixed_data.bin.gz`; obtainable battalion templates come
 from its `ObtainableBattalions.cs`. Re-export these catalogs when updating
 that data rather than editing generated C++ files.
 
+Supply categories live in `source/core/catalog.cpp`. Convoy categories use
+item IDs; storehouse categories use indices into `Player_V23.MiscItems`
+(223 byte counts at `0x13B1`) or `GiftItems` (225 byte counts at `0x1490`).
+These offsets were checked with `Marshal.OffsetOf` in the save editor and
+anchored to `CharacterSupportValues` at `0x1080`. Storehouse names come from
+the editor's v1.2.0 message database. Only ordinary supplies are included;
+lost items, quest-only bait, and unused entries are excluded. Anna's Trade
+Secret is Convoy item 1161, separate from the quest objects in `GiftItems`.
+
+Item actions are immediate. The owned-quantity action skips zero counts;
+category actions set each type to 99 and add missing Convoy types only once.
+Host checks cover both rules, unrelated inventory remaining unchanged, and
+normal durability for new Convoy items.
+
 Ability learning flags occupy 30 bytes at character offset `0x61`, with one
 bit per ID from 0 to 239. The UI excludes placeholder names. DLC abilities
 outside that mapped range need their learning flag locations confirmed

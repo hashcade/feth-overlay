@@ -6,19 +6,20 @@
 #include "feth/core/types.hpp"
 
 #include <set>
+#include <span>
 
 namespace feth::core {
 
-struct ItemEditOptions {
-  const std::set<ItemId>* ids{};
-  const ItemDurability* durability{};
-  const ItemAmount* amount{};
+struct ItemFillOptions {
+  const std::set<ItemId>& ids;
   bool addMissing{};
-  bool normalDurability{};
 };
 
-void editItems(
-  ItemArray& items, ItemCount& count, const ItemEditOptions& options
+void fillConvoyItems(
+  ItemArray& items, ItemCount& count, const ItemFillOptions& options
+);
+void fillItemCounts(
+  std::span<ItemAmount> counts, const std::set<ItemId>& ids, bool addMissing
 );
 bool classIsUnlocked(const ClassUnlocks& unlocks, ClassId classId);
 SupportCollection getSupportCollection();

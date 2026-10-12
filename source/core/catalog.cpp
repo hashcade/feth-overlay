@@ -67,14 +67,36 @@ static const auto QUEST_ID_SET = std::set<ItemId>{
   1161,  // Trade Secret
 };
 
-const std::list<NamedItemIdSet> NAMED_ITEM_ID_SET_LIST =
-  std::list<NamedItemIdSet>{
-    {"Potions", RECOVERY_ID_SET},
-    {"Exam Seals", SEAL_ID_SET},
-    {"Keys", KEY_ID_SET},
-    {"Gold Bars", GOLD_ID_SET},
-    {"Stat Boosters", STAT_UP_ID_SET},
-    {"Anna Quest Item", QUEST_ID_SET},
+// Storehouse IDs are indices into Player_V23.MiscItems / GiftItems,
+// not Convoy item IDs. Names match the save editor's v1.2.0 database.
+// Only regular obtainable supplies are included; skip quest and unused slots.
+const std::list<NamedItemIdSet> NAMED_ITEM_ID_SET_LIST = {
+  {"Potions", RECOVERY_ID_SET},
+  {"Exam Seals", SEAL_ID_SET},
+  {"Keys", KEY_ID_SET},
+  {"Stat Boosters", STAT_UP_ID_SET},
+  {"Forge Materials", {64, 65, 66, 67, 68, 69, 70, 71}, ItemStorage::Misc},
+  {"Gold Bars", GOLD_ID_SET},
+  {"Gifts",
+   {0,  1,   2,   3,   4,   5,   6,   7,   8,   9,   10,  11,  12, 13,
+    14, 15,  16,  17,  18,  19,  20,  21,  22,  23,  24,  25,  26, 27,
+    28, 197, 198, 199, 200, 201, 202, 203, 204, 205, 206, 207, 208},
+   ItemStorage::Gifts},
+  {"Tea",
+   {192, 193, 194, 195, 196, 197, 198, 199, 200, 201, 202,
+    203, 204, 205, 206, 207, 208, 209, 210, 211, 212},
+   ItemStorage::Misc},
+  {"Bait", {0, 5, 10, 17, 23}, ItemStorage::Misc},
+  {"Seeds",
+   {32, 33, 34, 38, 39, 41, 42, 43, 44, 45, 46,
+    47, 49, 50, 52, 53, 54, 55, 56, 57, 58},
+   ItemStorage::Misc},
+  {"Ingredients",
+   {96,  97,  98,  99,  100, 101, 102, 103, 104, 106, 107, 108, 109,
+    110, 111, 112, 136, 137, 138, 139, 140, 141, 142, 143, 144, 145,
+    146, 147, 148, 149, 150, 151, 160, 164, 167, 168, 169},
+   ItemStorage::Misc},
+  {"Trade Secret", QUEST_ID_SET},
 };
 
 // classes
