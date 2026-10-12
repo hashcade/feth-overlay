@@ -14,14 +14,26 @@ using namespace feth::core;
 int main() {
   // Match MHGU's console-language mapping, including legacy Chinese codes.
   assert(locale_from_switch_language(0) == Locale::Japanese);
-  for (int code : {6, 11, 15, 16}) {
+  for (int code : {6, 15}) {
     assert(locale_from_switch_language(code) == Locale::SimplifiedChinese);
   }
+  for (int code : {11, 16})
+    assert(locale_from_switch_language(code) == Locale::TraditionalChinese);
+  assert(locale_from_switch_language(7) == Locale::Korean);
+  assert(locale_from_nacp_language(2) == Locale::Japanese);
+  assert(locale_from_nacp_language(12) == Locale::TraditionalChinese);
+  assert(locale_from_nacp_language(13) == Locale::SimplifiedChinese);
+  assert(locale_from_nacp_language(14) == Locale::Korean);
+  assert(locale_from_nacp_language(0) == Locale::English);
   for (int code : {1, 2, 12, 99}) {
     assert(locale_from_switch_language(code) == Locale::English);
   }
   for (auto locale :
-       {Locale::English, Locale::SimplifiedChinese, Locale::Japanese}) {
+       {Locale::English,
+        Locale::SimplifiedChinese,
+        Locale::Japanese,
+        Locale::TraditionalChinese,
+        Locale::Korean}) {
     assert(resolve_locale(LocaleMode::Auto, locale) == locale);
     assert(resolve_locale(LocaleMode::English, locale) == Locale::English);
     assert(
@@ -32,7 +44,7 @@ int main() {
   }
 
   auto mode = LocaleMode::Auto;
-  for (int index = 0; index < 4; ++index) {
+  for (int index = 0; index < 6; ++index) {
     assert(parse_locale_mode(locale_mode_value(mode)) == mode);
     mode = next_locale_mode(mode);
   }
@@ -46,6 +58,15 @@ int main() {
   assert(class_name(0, Locale::English) == "Noble");
   assert(class_name(0, Locale::SimplifiedChinese) == "贵族");
   assert(class_name(0, Locale::Japanese) == "貴族");
+  assert(item_name(16, Locale::TraditionalChinese) == "鐵劍");
+  assert(item_name(16, Locale::Korean) == "철의 검");
+  assert(class_name(0, Locale::TraditionalChinese) == "貴族");
+  assert(class_name(0, Locale::Korean) == "귀족");
+  assert(
+    resolve_locale(LocaleMode::TraditionalChinese, Locale::English) ==
+    Locale::TraditionalChinese
+  );
+  assert(resolve_locale(LocaleMode::Korean, Locale::English) == Locale::Korean);
   assert(item_name(65535, Locale::Japanese) == "ID 65535");
   assert(character_name("Byleth", Locale::SimplifiedChinese) == "贝雷特");
   assert(character_name("Byleth♀", Locale::SimplifiedChinese) == "贝雷丝♀");
@@ -56,7 +77,11 @@ int main() {
 
   // All shipped class IDs and item groups need names and translated headings.
   for (const auto& group : NAMED_CLASS_ID_LIST_LIST) {
-    for (auto locale : {Locale::SimplifiedChinese, Locale::Japanese}) {
+    for (auto locale :
+         {Locale::SimplifiedChinese,
+          Locale::Japanese,
+          Locale::TraditionalChinese,
+          Locale::Korean}) {
       assert(ui_text(group.name, locale) != group.name);
       for (const auto& entry : group.list) {
         assert(!class_name(entry.id, locale).starts_with("ID "));
@@ -64,7 +89,11 @@ int main() {
     }
   }
   for (const auto& group : NAMED_ITEM_ID_SET_LIST) {
-    for (auto locale : {Locale::SimplifiedChinese, Locale::Japanese}) {
+    for (auto locale :
+         {Locale::SimplifiedChinese,
+          Locale::Japanese,
+          Locale::TraditionalChinese,
+          Locale::Korean}) {
       assert(ui_text(group.name, locale) != group.name);
       if (group.storage == ItemStorage::Convoy) {
         for (auto id : group.itemIdSet)
@@ -85,10 +114,14 @@ int main() {
         "None",
         "←/→ Rank",
         "Battalion Edit",
+        "Fill Missing Types",
+        "Refill Endurance",
         "Amount to 99",
         "Refill All Durability"}) {
     assert(ui_text(label, Locale::SimplifiedChinese) != label);
     assert(ui_text(label, Locale::Japanese) != label);
+    assert(ui_text(label, Locale::TraditionalChinese) != label);
+    assert(ui_text(label, Locale::Korean) != label);
   }
   std::cout << "Localization checks passed\n";
 }

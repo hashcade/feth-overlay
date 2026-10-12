@@ -9,7 +9,7 @@
 An in-game overlay for Fire Emblem: Three Houses v1.2.0. Edit money, renown, items,
 classes, support points, and battalions from a single menu.
 
-English, Simplified Chinese, and Japanese are supported. The language follows
+English, Simplified Chinese, Traditional Chinese, Japanese, and Korean are supported. The language follows
 your console by default; choose **Language** in the main menu to override it.
 Your language choice is remembered between sessions.
 
@@ -97,7 +97,7 @@ Changes affect the running game; save in-game to keep them.
   project organization, shared menu styling, numeric controls, and automatic
   language detection.
 - [jinghaihan/feth-save-editor](https://github.com/jinghaihan/feth-save-editor):
-  the English, Simplified Chinese, and Japanese game names
+  the localized game names
   exported from its game database, originally provided by imouto1994 and Falo,
   and the per-character class eligibility and support-rank rules.
 - [WerWolv/libtesla](https://github.com/WerWolv/libtesla): the original Tesla

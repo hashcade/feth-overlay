@@ -17,6 +17,10 @@ std::string language_value(const Model& model) {
       return "简体中文";
     case core::LocaleMode::Japanese:
       return "日本語";
+    case core::LocaleMode::TraditionalChinese:
+      return "繁體中文";
+    case core::LocaleMode::Korean:
+      return "한국어";
     default:
       return text(model, "Automatic");
   }

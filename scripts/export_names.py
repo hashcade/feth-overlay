@@ -10,7 +10,7 @@ from pathlib import Path
 import subprocess
 
 ROOT = Path(__file__).resolve().parents[1]
-LANGUAGES = ('en_u', 'zh_hans', 'jp')
+LANGUAGES = ('en_u', 'zh_hans', 'jp', 'zh_hant', 'kr')
 
 
 def catalog(editor, kind, language):
@@ -64,7 +64,7 @@ def generate(tables):
         '// Game text from feth-save-editor; original data retains its authorship.',
         '#include "feth/core/names.hpp"',
         '', 'namespace feth::core {', 'namespace {',
-        'struct NamedEntry { unsigned id; const char* names[3]; };',
+        'struct NamedEntry { unsigned id; const char* names[5]; };',
     ]
     for kind in ('items', 'classes', 'characters'):
         if kind == 'characters':
@@ -82,7 +82,7 @@ def generate(tables):
         characters.setdefault(names[0], names)
         if names[0].endswith(('♂', '♀')):
             characters.setdefault(names[0][:-1], [name.rstrip('♂♀') for name in names])
-    lines.extend(['struct CharacterName { const char* names[3]; };',
+    lines.extend(['struct CharacterName { const char* names[5]; };',
                   'constexpr CharacterName kCharacters[] = {'])
     for names in sorted(characters.values()):
         lines.append('  {{' + ', '.join(literal(name) for name in names) + '}},')

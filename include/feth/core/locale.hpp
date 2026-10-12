@@ -8,17 +8,26 @@
 
 namespace feth::core {
 
-enum class Locale : std::uint8_t { English, SimplifiedChinese, Japanese };
+enum class Locale : std::uint8_t {
+  English,
+  SimplifiedChinese,
+  Japanese,
+  TraditionalChinese,
+  Korean
+};
 enum class LocaleMode : std::uint8_t {
   Auto,
   English,
   SimplifiedChinese,
-  Japanese
+  Japanese,
+  TraditionalChinese,
+  Korean
 };
 
 Locale resolve_locale(LocaleMode mode, Locale detected);
 Locale locale_from_switch_language(std::int32_t language);
 LocaleMode next_locale_mode(LocaleMode mode);
+Locale locale_from_nacp_language(std::int32_t language);
 LocaleMode parse_locale_mode(std::string_view value);
 const char* locale_mode_value(LocaleMode mode);
 

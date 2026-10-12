@@ -43,9 +43,9 @@ build does not verify menu behavior or memory edits on hardware.
 ## Localization
 
 Auto prefers the console language, falls back to the game's NACP language,
-and uses English for unsupported languages. Chinese console variants map to
-Simplified Chinese, as in MHGU Overlay. Manual modes cycle through Auto,
-English, Simplified Chinese, and Japanese. The selection is saved in
+and uses English for unsupported languages. Simplified Chinese, Traditional
+Chinese, and Korean console settings are detected separately. Manual modes cycle through Auto, English, Simplified
+Chinese, Traditional Chinese, Japanese, and Korean. The selection is saved in
 `sdmc:/config/feth-overlay/config.ini` under `[overlay]` as `language`.
 
 Menu text lives in `source/core/messages.cpp`. Game names are exported through
@@ -65,6 +65,10 @@ The export requires the .NET 10 SDK. `assets/localization/names.json` records
 the source revision and exported catalogs; `source/generated/names.cpp`
 embeds the names so installation still needs only one OVL. Game text retains
 its original authorship and is not covered by the MIT license for new code.
+Traditional Chinese and Korean shared fonts are enabled through
+`patches/libtesla-fonts.patch`, applied to a build-local header without
+modifying the dependency checkout.
+
 Host checks cover language mapping, overrides, persistent mode values, and
 name lookup for every class and item category used by the overlay.
 

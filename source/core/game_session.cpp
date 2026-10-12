@@ -81,7 +81,7 @@ Locale detect_locale() {
         desired - reinterpret_cast<const NacpLanguageEntry*>(&control->nacp);
       nsExit();
       if (index >= 0 && index < 16) {
-        return locale_from_switch_language(static_cast<std::int32_t>(index));
+        return locale_from_nacp_language(static_cast<std::int32_t>(index));
       }
       return Locale::English;
     }
