@@ -21,7 +21,7 @@ Your language choice is remembered between sessions.
 | Item Trainer | Restore normal durability, top up owned supplies, or fill a supply category to 99. |
 | Class Unlocks | Unlock individual classes or all eligible classes for a character, filtered by starting class, gender, and exclusive roles. |
 | Support Edit | Change support ranks within each pair's limits, or max all supports for a character. |
-| Battalion Edit | Edit type, level, and current endurance for owned battalions. |
+| Battalion Edit | Refill endurance, max levels, or add missing battalion types. |
 
 **Refill All Durability** restores Convoy and character-held items to each
 item's normal maximum durability.
@@ -43,10 +43,11 @@ unlock flags are preserved; change classes from the game's own menus.
 Enabling Dancer also grants Sword Avo +20. Disabling Dancer removes the ability,
 including from equipped slots. **Unlock All** grants it to eligible dancers.
 
-Changing a battalion's type assigns its default gambit and restores its full
-endurance. Level can be adjusted from 1 to 5. Changing only type or endurance
-preserves experience progress. Battalion edits also update the equipped copy.
-**Refill All Battalions** restores known types in the barracks and on characters.
+**Battalion Edit** provides three independent actions: **Refill Endurance**,
+**Max All**, and **Fill Missing Types**. Existing battalions are preserved when
+adding missing types. New battalions start at level 1 with full endurance and
+their default gambit, and are not assigned to a character. Only obtainable
+types are added, up to the barracks capacity.
 
 **Support Edit** shows the ranks available to each pair. Left/Right changes the
 rank immediately; **Max All** raises the selected character's supports to each
@@ -75,8 +76,7 @@ Changes affect the running game; save in-game to keep them.
   take effect when pressed.
 - **B** returns to the previous menu.
 - **Left/Right** adjusts a numeric value by 1 or changes a support rank immediately.
-- **L/R** adjusts battalion endurance by 10.
-  Money changes by 10,000 and renown by 1,000.
+- **L/R** changes money by 10,000 and renown by 1,000.
 - **L + Down** hides the overlay and keeps the current menu open for next time.
 
 ## Documentation

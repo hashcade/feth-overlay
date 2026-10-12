@@ -189,62 +189,12 @@ void setPlayerResources(const PlayerResources& resources) {
   write_game(RENOWN_OFFSET, resources.renown);
 }
 
-BattalionArray getBattalions() {
-  TRY_THROW(!gameIsRunning());
-  return read_game<BattalionArray>(BATTALION_OFFSET);
-}
-
-Battalion getBattalion(std::size_t index) {
-  TRY_THROW(!gameIsRunning());
-  auto battalion =
-    read_game<Battalion>(BATTALION_OFFSET + index * sizeof(Battalion));
-  if (battalion.characterId >= 0) {
-    const auto roster = read_game<RosterCharacterArray>(ROSTER_OFFSET);
-    for (const auto& character : roster) {
-      if (
-        character.id == battalion.characterId &&
-        character.equippedBattalion.type == battalion.type
-      ) {
-        // Active battles can update the equipped copy first.
-        battalion.exp = character.equippedBattalion.exp;
-        battalion.stamina = character.equippedBattalion.stamina;
-        break;
-      }
-    }
-  }
-  return battalion;
-}
-
-void setBattalion(std::size_t index, Battalion battalion) {
-  if (!gameIsRunning())
-    return;
-  const auto offset = BATTALION_OFFSET + index * sizeof(Battalion);
-  const auto original = read_game<Battalion>(offset);
-  if (original.characterId >= 0) {
-    const auto roster = read_game<RosterCharacterArray>(ROSTER_OFFSET);
-    for (std::size_t slot = 0; slot < roster.size(); ++slot) {
-      if (
-        roster[slot].id == original.characterId &&
-        roster[slot].equippedBattalion.type == original.type
-      ) {
-        write_game(
-          ROSTER_OFFSET + slot * sizeof(Character) +
-            offsetof(Character, equippedBattalion),
-          battalion
-        );
-        break;
-      }
-    }
-  }
-  write_game(offset, battalion);
-}
-
-void refillBattalionStamina() {
+static void updateBattalions(std::size_t (*action)(std::span<Battalion>)) {
   if (!gameIsRunning())
     return;
   auto battalions = read_game<BattalionArray>(BATTALION_OFFSET);
   const auto original = battalions;
-  refill_battalions(battalions);
+  action(battalions);
   for (std::size_t index = 0; index < battalions.size(); ++index) {
     if (battalions[index] != original[index])
       write_game(
@@ -257,7 +207,7 @@ void refillBattalionStamina() {
     auto battalion = roster[index].equippedBattalion;
     if (
       UNIT_ID_NAME_MAP.contains(roster[index].id) &&
-      refill_battalions(std::span(&battalion, 1))
+      action(std::span(&battalion, 1))
     ) {
       write_game(
         ROSTER_OFFSET + index * sizeof(Character) +
@@ -265,6 +215,28 @@ void refillBattalionStamina() {
         battalion
       );
     }
+  }
+}
+
+void refillBattalionStamina() {
+  updateBattalions(refill_battalions);
+}
+
+void maxBattalionLevels() {
+  updateBattalions(max_battalion_levels);
+}
+
+void fillMissingBattalions() {
+  if (!gameIsRunning())
+    return;
+  auto battalions = read_game<BattalionArray>(BATTALION_OFFSET);
+  const auto original = battalions;
+  fill_missing_battalions(battalions);
+  for (std::size_t index = 0; index < battalions.size(); ++index) {
+    if (battalions[index] != original[index])
+      write_game(
+        BATTALION_OFFSET + index * sizeof(Battalion), battalions[index]
+      );
   }
 }
 

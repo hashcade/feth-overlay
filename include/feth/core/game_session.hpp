@@ -23,10 +23,9 @@ void fillOwnedItemAmounts();
 void refillItemDurability();
 PlayerResources getPlayerResources();
 void setPlayerResources(const PlayerResources& resources);
-BattalionArray getBattalions();
-Battalion getBattalion(std::size_t index);
-void setBattalion(std::size_t index, Battalion battalion);
 void refillBattalionStamina();
+void maxBattalionLevels();
+void fillMissingBattalions();
 std::list<core::RosterEntry> getRosterEntries();
 core::ClassUnlocks getRosterCharacterClassUnlockAtIndex(std::size_t index);
 void setClassUnlockAtIndexOfRosterCharacterAtIndex(
