@@ -4,35 +4,6 @@
 
 #pragma once
 
-class SupportEditGui final : public MenuGui {
-public:
-  SupportEditGui(Model& model, core::SupportEntry entry)
-    : MenuGui(
-        model,
-        core::character_name(entry.p_pair->first, model.display_locale()) +
-          " x " +
-          core::character_name(entry.p_pair->second, model.display_locale())
-      ),
-      entry_(entry) {}
-
-protected:
-  void populate(tsl::elm::List* list) override {
-    points_ = game::getSupportPointAtIndex(entry_.index);
-    list->addItem(
-      numeric_item(text(model_, "Support Points"), points_, {0, 9999, 100})
-    );
-    list->addItem(action_item(model_, text(model_, "Apply Support"), [this] {
-      game::setSupportPointAtIndex(
-        entry_.index, static_cast<core::SupportPoint>(points_)
-      );
-    }));
-  }
-
-private:
-  core::SupportEntry entry_;
-  int points_{};
-};
-
 class SupportListGui final : public MenuGui {
 public:
   SupportListGui(Model& model, core::SupportList entries)
@@ -43,24 +14,16 @@ public:
       ),
       entries_(std::move(entries)) {}
 
-  void update() override {
-    if (pending_item_ == nullptr) {
-      return;
-    }
-    if (model_.refresh()) {
-      try {
-        pending_item_->setValue(
-          std::to_string(game::getSupportPointAtIndex(pending_index_))
-        );
-      } catch (const std::exception& error) {
-        model_.showError(error.what());
-      }
-    }
-    pending_item_ = nullptr;
-  }
-
 protected:
   void populate(tsl::elm::List* list) override {
+    items_.clear();
+    list->addItem(action_item(model_, text(model_, "Max All"), [this] {
+      game::reachMaxSupportRanks(entries_);
+      for (const auto& [index, item] : items_)
+        refresh_item(index, item);
+    }));
+    category_header(list, text(model_, "←/→ Rank"));
+
     for (const auto& entry : entries_.list) {
       const auto& pair = *entry->p_pair;
       auto* item = new tsl::elm::ListItem(
@@ -69,26 +32,39 @@ protected:
           model_.display_locale()
         )
       );
-      item->setValue(
-        std::to_string(game::getSupportPointAtIndex(entry->index))
-      );
-      item->setClickListener([this, item, entry](u64 keys) {
-        if ((keys & HidNpadButton_A) == 0) {
+      refresh_item(entry->index, item);
+      item->setClickListener([this, item, index = entry->index](u64 keys) {
+        int step{};
+        if (keys & HidNpadButton_AnyLeft)
+          step = -1;
+        else if (keys & HidNpadButton_AnyRight)
+          step = 1;
+        else
           return false;
-        }
-        pending_item_ = item;
-        pending_index_ = entry->index;
-        tsl::changeTo<SupportEditGui>(model_, *entry);
+
+        model_.apply([this, item, index, step] {
+          const auto before = game::getSupportPointAtIndex(index);
+          const auto after = core::step_support_rank(index, before, step);
+          if (after != before)
+            game::setSupportPointAtIndex(index, after);
+          refresh_item(index, item);
+        });
         return true;
       });
       list->addItem(item);
+      items_.push_back({entry->index, item});
     }
   }
 
 private:
+  void refresh_item(std::size_t index, tsl::elm::ListItem* item) {
+    const auto rank =
+      core::support_rank(index, game::getSupportPointAtIndex(index));
+    item->setValue("< " + text(model_, rank.name) + " >");
+  }
+
   core::SupportList entries_;
-  tsl::elm::ListItem* pending_item_{};
-  std::size_t pending_index_{};
+  std::vector<std::pair<std::size_t, tsl::elm::ListItem*>> items_;
 };
 
 class SupportGui final : public MenuGui {

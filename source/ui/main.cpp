@@ -12,6 +12,7 @@
 #include "feth/core/items.hpp"
 #include "feth/core/messages.hpp"
 #include "feth/core/names.hpp"
+#include "feth/core/supports.hpp"
 
 #include <algorithm>
 #include <chrono>

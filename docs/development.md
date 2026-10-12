@@ -56,6 +56,7 @@ python3 scripts/export_names.py ../feth-save-editor
 python3 scripts/export_item_data.py ../feth-save-editor
 python3 scripts/export_battalions.py ../feth-save-editor
 python3 scripts/export_classes.py ../feth-save-editor
+python3 scripts/export_supports.py ../feth-save-editor
 clang-format -i source/generated/*.cpp
 make -f Makefile.host test
 ```
@@ -83,6 +84,15 @@ Dancer (class 43) also toggles Sword Avo +20 (ability 56). Bulk class unlock
 adds it only for characters eligible for Dancer. Disabling Dancer clears the
 learned bit and replaces equipped occurrences with the editor's empty ability
 ID 240. Equipped abilities occupy five bytes at character offset `0x7F`.
+
+Support-rank presets and per-pair limits are exported by calling the editor's
+`SupportRankPresets` and `SupportPairRanks`. `assets/support-ranks.json` records
+all 270 entries and their source revision. The exporter checks the original
+pair order against the editor's game database. Pairs without conversations
+are hidden without renumbering their memory indices. Left/Right skips ranks
+that do not exist for the pair and applies the preset immediately. **Max All**
+affects only the selected character's pairs and preserves points already above
+the maximum-rank preset. It does not change conversation or story flags.
 
 The memory profile targets only the v1.2.0 build ID. Item durability comes from
 the save editor's `fixed_data.bin.gz`; obtainable battalion templates come

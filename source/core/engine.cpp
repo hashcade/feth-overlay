@@ -4,6 +4,7 @@
 #include "feth/core/engine.hpp"
 #include "feth/core/catalog.hpp"
 #include "feth/core/items.hpp"
+#include "feth/core/supports.hpp"
 
 #include <unordered_map>
 
@@ -73,8 +74,12 @@ SupportCollection getSupportCollection() {
 
   auto index = size_t{0};
   for (auto& supportPair : SUPPORT_LIST) {
+    const auto pairIndex = index++;
+    if (support_rank_mask(pairIndex) == 0)
+      continue;
+
     auto curSupportEntry =
-      std::make_shared<SupportEntry>(SupportEntry{index, &supportPair});
+      std::make_shared<SupportEntry>(SupportEntry{pairIndex, &supportPair});
     allList.push_back(curSupportEntry);
 
     if (
@@ -100,8 +105,6 @@ SupportCollection getSupportCollection() {
         curSupportEntry
       );
     }
-
-    index++;
   }
 
   return resultSupportCollection;

@@ -20,7 +20,7 @@ Your language choice is remembered between sessions.
 | Resources | Edit money and renown. |
 | Item Trainer | Restore normal durability, top up owned supplies, or fill a supply category to 99. |
 | Class Unlocks | Unlock individual classes or all eligible classes for a character, filtered by starting class, gender, and exclusive roles. |
-| Support Edit | Edit support points between characters. |
+| Support Edit | Change support ranks within each pair's limits, or max all supports for a character. |
 | Battalion Edit | Edit type, level, and current endurance for owned battalions. |
 
 **Refill All Durability** restores Convoy and character-held items to each
@@ -48,6 +48,10 @@ endurance. Level can be adjusted from 1 to 5. Changing only type or endurance
 preserves experience progress. Battalion edits also update the equipped copy.
 **Refill All Battalions** restores known types in the barracks and on characters.
 
+**Support Edit** shows the ranks available to each pair. Left/Right changes the
+rank immediately; **Max All** raises the selected character's supports to each
+pair's maximum. Support conversations still follow the game's progression.
+
 Changes affect the running game; save in-game to keep them.
 
 ## Requirements
@@ -70,8 +74,8 @@ Changes affect the running game; save in-game to keep them.
 - **A** opens a submenu, toggles a setting, or applies an edit. Item actions
   take effect when pressed.
 - **B** returns to the previous menu.
-- **Left/Right** adjusts a numeric value by 1.
-- **L/R** adjusts support points by 100 or battalion endurance by 10.
+- **Left/Right** adjusts a numeric value by 1 or changes a support rank immediately.
+- **L/R** adjusts battalion endurance by 10.
   Money changes by 10,000 and renown by 1,000.
 - **L + Down** hides the overlay and keeps the current menu open for next time.
 
@@ -95,7 +99,7 @@ Changes affect the running game; save in-game to keep them.
 - [jinghaihan/feth-save-editor](https://github.com/jinghaihan/feth-save-editor):
   the English, Simplified Chinese, and Japanese game names
   exported from its game database, originally provided by imouto1994 and Falo,
-  and the per-character class eligibility rules.
+  and the per-character class eligibility and support-rank rules.
 - [WerWolv/libtesla](https://github.com/WerWolv/libtesla): the original Tesla
   UI runtime.
 - [minazuki19/libtesla](https://github.com/minazuki19/libtesla): the libtesla

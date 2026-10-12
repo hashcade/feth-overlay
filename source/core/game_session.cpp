@@ -7,6 +7,7 @@
 #include "feth/core/engine.hpp"
 #include "feth/core/game_profile.hpp"
 #include "feth/core/items.hpp"
+#include "feth/core/supports.hpp"
 
 #include <dmntcht.h>
 #include <switch.h>
@@ -405,6 +406,17 @@ void setSupportPointAtIndex(size_t supportIndex, SupportPoint points) {
     &points,
     sizeof(points)
   ));
+}
+
+void reachMaxSupportRank(std::size_t index) {
+  const auto target = max_support_points(index);
+  if (getSupportPointAtIndex(index) < target)
+    setSupportPointAtIndex(index, target);
+}
+
+void reachMaxSupportRanks(const SupportList& supports) {
+  for (const auto& entry : supports.list)
+    reachMaxSupportRank(entry->index);
 }
 
 }  // namespace feth::core

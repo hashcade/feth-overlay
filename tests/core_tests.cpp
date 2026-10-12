@@ -6,7 +6,9 @@
 #include "feth/core/engine.hpp"
 #include "feth/core/game_profile.hpp"
 #include "feth/core/items.hpp"
+#include "feth/core/supports.hpp"
 
+#include <algorithm>
 #include <bit>
 #include <cassert>
 #include <iostream>
@@ -297,12 +299,63 @@ int main() {
     assert(unlocks.specialClassUnlocks == before.specialClassUnlocks);
   }
 
-  // Both character menus must refer to the same indexed support pair.
+  // Rank options and point presets match each pair, including intermediate
+  // ranks.
+  assert(available_support_ranks(160).size() == 3);  // Sylvain / Annette: C, B.
+  assert(max_support_points(160) == 301);
+  assert(step_support_rank(160, 101, 1) == 301);
+  assert(step_support_rank(160, 301, -1) == 101);
+  assert(
+    step_support_rank(160, 9999, 1) == 9999
+  );  // No change at the upper end.
+  assert(step_support_rank(160, 0, -1) == 0);
+  assert(support_rank(160, 1001).name == "B");
+  assert(max_support_points(82) == 601);  // Ferdinand / Mercedes: includes B+.
+  assert(step_support_rank(82, 301, 1) == 451);
+  assert(step_support_rank(82, 451, 1) == 601);
+  assert(
+    max_support_points(0) == 1001
+  );  // Byleth / Edelgard: includes C+ and S.
+  assert(step_support_rank(0, 101, 1) == 201);
+  assert(step_support_rank(0, 301, 1) == 601);  // No B+ conversation.
+  assert(
+    support_rank_mask(35) == 0
+  );  // Edelgard / Dimitri has no conversations.
+  assert(max_support_points(35) == 0);
+  assert(support_rank_mask(270) == 0);
+
+  for (std::size_t pair = 0; pair < 270; ++pair) {
+    const auto ranks = available_support_ranks(pair);
+    assert(ranks.front().name == "None" && ranks.front().points == 0);
+    assert(max_support_points(pair) == ranks.back().points);
+    for (std::size_t rank = 0; rank < ranks.size(); ++rank) {
+      const auto& current = ranks[rank];
+      assert(support_rank(pair, current.points).name == current.name);
+      if (rank > 0) {
+        assert(
+          support_rank(pair, current.points - 1).name == ranks[rank - 1].name
+        );
+        assert(
+          step_support_rank(pair, current.points, -1) == ranks[rank - 1].points
+        );
+      }
+      if (rank + 1 < ranks.size())
+        assert(
+          step_support_rank(pair, current.points, 1) == ranks[rank + 1].points
+        );
+    }
+  }
+
+  // Filtering must keep original memory indices, and both character menus
+  // must refer to the same support pair.
   const auto supports = getSupportCollection();
-  assert(supports.allList.size() == SUPPORT_LIST.size());
-  std::size_t index{};
+  std::size_t expected{};
+  for (std::size_t index = 0; index < SUPPORT_LIST.size(); ++index)
+    expected += support_rank_mask(index) != 0;
+  assert(supports.allList.size() == expected);
   for (const auto& entry : supports.allList) {
-    assert(entry->index == index++);
+    assert(support_rank_mask(entry->index) != 0);
+    assert(entry->p_pair == &*std::next(SUPPORT_LIST.begin(), entry->index));
     int occurrences{};
     for (const auto& character : supports.supportListList) {
       for (const auto& candidate : character.list) {

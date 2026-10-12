@@ -35,5 +35,7 @@ void setClassUnlockAtIndexOfRosterCharacterAtIndex(
 void unlockAvailableClasses(std::size_t index);
 core::SupportPoint getSupportPointAtIndex(std::size_t index);
 void setSupportPointAtIndex(std::size_t index, core::SupportPoint points);
+void reachMaxSupportRank(std::size_t index);
+void reachMaxSupportRanks(const SupportList& supports);
 
 }  // namespace feth::core
