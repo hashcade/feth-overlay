@@ -34,6 +34,7 @@ ARCH := -march=armv8-a+crc+crypto -mtune=cortex-a57 -mtp=soft -fPIE
 CFLAGS := -g -Wall -O2 -ffunction-sections $(ARCH) $(DEFINES)
 CFLAGS += $(INCLUDE) -D__SWITCH__
 CXXFLAGS := $(CFLAGS) -std=gnu++20 \
+	-isystem$(TOPDIR)/build/tesla \
 	-isystem$(TOPDIR)/libs/libtesla/include \
 	-DFETH_OVERLAY_VERSION=\"$(APP_VERSION)\"
 ASFLAGS := -g $(ARCH)
@@ -64,7 +65,12 @@ export INCLUDE := $(foreach dir,$(INCLUDES),-I$(CURDIR)/$(dir)) \
 	-I$(CURDIR)/$(BUILD)
 export LIBPATHS := $(foreach dir,$(LIBDIRS),-L$(dir)/lib)
 
-$(BUILD):
+$(BUILD)/tesla/tesla.hpp: libs/libtesla/include/tesla.hpp patches/libtesla-fonts.patch
+	@mkdir -p $(dir $@)
+	@cp $< $@
+	@patch --silent $@ < patches/libtesla-fonts.patch
+
+$(BUILD): $(BUILD)/tesla/tesla.hpp
 	@mkdir -p $@
 	@$(MAKE) --no-print-directory -C $(BUILD) -f $(CURDIR)/Makefile
 
