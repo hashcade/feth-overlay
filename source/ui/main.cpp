@@ -38,7 +38,6 @@ std::chrono::steady_clock::time_point g_shown_at;
 #include "components/resources_edit.hpp"
 #include "components/item_trainer.hpp"
 #include "components/class_edit.hpp"
-#include "components/ability_edit.hpp"
 #include "components/support_edit.hpp"
 #include "components/battalion_edit.hpp"
 #include "components/main_menu.hpp"

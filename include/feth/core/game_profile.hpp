@@ -27,7 +27,8 @@ struct __attribute__((__packed__)) Character {
 
   std::array<uint8_t, 0x19> padding0;
   LearnedAbilities abilities;
-  std::array<uint8_t, 0x54> paddingAbilities;
+  EquippedAbilities equippedAbilities;
+  std::array<uint8_t, 0x4F> paddingAbilities;
   ClassUnlockData classUnlocks;
   std::array<uint8_t, 8> padding1;
   ClassUnlockData specialClassUnlocks;
@@ -36,6 +37,7 @@ struct __attribute__((__packed__)) Character {
 static_assert(sizeof(Character) == 0x24C);
 static_assert(offsetof(Character, equippedBattalion) == 0x18);
 static_assert(offsetof(Character, abilities) == 0x61);
+static_assert(offsetof(Character, equippedAbilities) == 0x7F);
 static_assert(offsetof(Character, classUnlocks) == 0xD3);
 static_assert(offsetof(Character, specialClassUnlocks) == 0xE3);
 using RosterCharacterArray = std::array<Character, ROSTER_CHARACTER_COUNT>;

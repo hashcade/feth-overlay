@@ -267,25 +267,6 @@ void refillBattalionStamina() {
   }
 }
 
-LearnedAbilities getCharacterAbilities(std::size_t index) {
-  TRY_THROW(!gameIsRunning());
-  return read_game<LearnedAbilities>(
-    ROSTER_OFFSET + index * sizeof(Character) + offsetof(Character, abilities)
-  );
-}
-
-void setCharacterAbilityLearned(std::size_t index, AbilityId id, bool learned) {
-  if (!gameIsRunning() || id >= LEARNED_ABILITY_COUNT)
-    return;
-  auto abilities = getCharacterAbilities(index);
-  set_ability_learned(abilities, id, learned);
-  write_game(
-    ROSTER_OFFSET + index * sizeof(Character) + offsetof(Character, abilities) +
-      id / 8,
-    abilities[id / 8]
-  );
-}
-
 std::list<core::RosterEntry> getRosterEntries() {
   TRY_THROW(!gameIsRunning());
 
@@ -319,6 +300,18 @@ ClassUnlocks class_unlocks(const Character& character) {
       (character.specialClassUnlocks[bit / 8] >> (bit % 8)) & 1;
   }
   return result;
+}
+
+void write_dancer_ability(std::size_t offset, const Character& character) {
+  write_game(
+    offset + offsetof(Character, abilities) + SWORD_AVOID_ABILITY_ID / 8,
+    character.abilities[SWORD_AVOID_ABILITY_ID / 8]
+  );
+  if (!ability_is_learned(character.abilities, SWORD_AVOID_ABILITY_ID))
+    write_game(
+      offset + offsetof(Character, equippedAbilities),
+      character.equippedAbilities
+    );
 }
 }  // namespace
 
@@ -357,6 +350,11 @@ void setClassUnlockAtIndexOfRosterCharacterAtIndex(
       bit / 8,
     byte
   );
+
+  if (classId == DANCER_CLASS_ID) {
+    sync_dancer_ability(character, isUnlocked);
+    write_dancer_ability(offset, character);
+  }
 }
 
 void unlockAvailableClasses(std::size_t index) {
@@ -378,6 +376,11 @@ void unlockAvailableClasses(std::size_t index) {
     offset + offsetof(Character, specialClassUnlocks),
     character.specialClassUnlocks
   );
+
+  if (class_is_available(character.id, DANCER_CLASS_ID)) {
+    sync_dancer_ability(character, true);
+    write_dancer_ability(offset, character);
+  }
 }
 
 core::SupportPoint getSupportPointAtIndex(size_t supportIndex) {

@@ -55,7 +55,6 @@ the save editor's existing CLI, preserving its ID mappings and translations:
 python3 scripts/export_names.py ../feth-save-editor
 python3 scripts/export_item_data.py ../feth-save-editor
 python3 scripts/export_battalions.py ../feth-save-editor
-python3 scripts/export_abilities.py ../feth-save-editor
 python3 scripts/export_classes.py ../feth-save-editor
 clang-format -i source/generated/*.cpp
 make -f Makefile.host test
@@ -80,6 +79,10 @@ bulk unlock share the same eligibility table, including Noble/Commoner,
 gender restrictions, exclusive classes, and White Heron Cup eligibility.
 Re-export after changing those rules in the editor. Bulk unlock only adds
 eligible flags; hidden or previously modified flags remain untouched.
+Dancer (class 43) also toggles Sword Avo +20 (ability 56). Bulk class unlock
+adds it only for characters eligible for Dancer. Disabling Dancer clears the
+learned bit and replaces equipped occurrences with the editor's empty ability
+ID 240. Equipped abilities occupy five bytes at character offset `0x7F`.
 
 The memory profile targets only the v1.2.0 build ID. Item durability comes from
 the save editor's `fixed_data.bin.gz`; obtainable battalion templates come

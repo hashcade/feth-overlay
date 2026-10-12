@@ -7,7 +7,7 @@
 [![build](https://github.com/jinghaihan/feth-overlay/actions/workflows/build.yml/badge.svg)](https://github.com/jinghaihan/feth-overlay/actions/workflows/build.yml)
 
 An in-game overlay for Fire Emblem: Three Houses v1.2.0. Edit money, renown, items,
-classes, abilities, support points, and battalions from a single menu.
+classes, support points, and battalions from a single menu.
 
 English, Simplified Chinese, and Japanese are supported. The language follows
 your console by default; choose **Language** in the main menu to override it.
@@ -20,7 +20,6 @@ Your language choice is remembered between sessions.
 | Resources | Edit money and renown. |
 | Item Trainer | Restore normal durability, top up owned supplies, or fill a supply category to 99. |
 | Class Unlocks | Unlock individual classes or all eligible classes for a character, filtered by starting class, gender, and exclusive roles. |
-| Ability Unlocks | Learn or forget abilities for each roster character. |
 | Support Edit | Edit support points between characters. |
 | Battalion Edit | Edit type, level, and current endurance for owned battalions. |
 
@@ -41,14 +40,13 @@ Repeated clicks keep the quantity at 99:
 **Class Unlocks** shows each character's eligible classes, including DLC
 classes. **Unlock All** unlocks the displayed classes immediately. Existing
 unlock flags are preserved; change classes from the game's own menus.
+Enabling Dancer also grants Sword Avo +20. Disabling Dancer removes the ability,
+including from equipped slots. **Unlock All** grants it to eligible dancers.
 
 Changing a battalion's type assigns its default gambit and restores its full
 endurance. Level can be adjusted from 1 to 5. Changing only type or endurance
 preserves experience progress. Battalion edits also update the equipped copy.
 **Refill All Battalions** restores known types in the barracks and on characters.
-
-Toggle **Learned / Not Learned** to learn or forget an ability. Equip abilities
-from the game's own menus. Some DLC abilities are not included yet.
 
 Changes affect the running game; save in-game to keep them.
 

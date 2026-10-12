@@ -38,30 +38,36 @@ int main() {
   const auto unchanged = abilities;
   set_ability_learned(abilities, 250, true);
   assert(abilities == unchanged);
-  for (const auto id : ability_ids()) {
-    assert(id < LEARNED_ABILITY_COUNT);
-    for (const auto locale :
-         {Locale::English, Locale::SimplifiedChinese, Locale::Japanese})
-      assert(!ability_name(id, locale).empty());
-  }
-
-  // Sword Avo +20 is an ability flag, not a weapon-skill rank or experience.
-  assert(ability_name(56, Locale::SimplifiedChinese) == "剑回避+20");
+  // Dancer grants Sword Avo +20 without changing weapon-skill experience.
   Character character{};
   character.skillExps.fill(1234);
+  character.abilities.fill(0xAA);
+  character.equippedAbilities = {7, 56, 9, 56, EMPTY_ABILITY_ID};
   using CharacterBytes = std::array<std::uint8_t, sizeof(Character)>;
   const auto before_ability = std::bit_cast<CharacterBytes>(character);
-  set_ability_learned(character.abilities, 56, true);
+  sync_dancer_ability(character, true);
   assert(ability_is_learned(character.abilities, 56));
   const auto after_ability = std::bit_cast<CharacterBytes>(character);
   for (std::size_t index = 0; index < after_ability.size(); ++index) {
     if (index == 0x68)
-      assert(after_ability[index] == 1);
+      assert(after_ability[index] == (before_ability[index] | 1));
     else
       assert(after_ability[index] == before_ability[index]);
   }
-  set_ability_learned(character.abilities, 56, false);
-  assert(std::bit_cast<CharacterBytes>(character) == before_ability);
+  sync_dancer_ability(character, true);
+  assert(std::bit_cast<CharacterBytes>(character) == after_ability);
+  sync_dancer_ability(character, false);
+  assert(!ability_is_learned(character.abilities, SWORD_AVOID_ABILITY_ID));
+  assert(
+    (character.equippedAbilities == EquippedAbilities{7, 240, 9, 240, 240})
+  );
+  const auto after_removal = std::bit_cast<CharacterBytes>(character);
+  for (std::size_t index = 0; index < after_removal.size(); ++index) {
+    if (index != 0x80 && index != 0x82)
+      assert(after_removal[index] == before_ability[index]);
+  }
+  sync_dancer_ability(character, false);
+  assert(std::bit_cast<CharacterBytes>(character) == after_removal);
 
   BattalionArray battalions{};
   battalions.fill({-1, 0, 0, EMPTY_BATTALION_TYPE, 80});

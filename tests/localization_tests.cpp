@@ -81,9 +81,6 @@ int main() {
         "Apply Changes",
         "Class Unlocks",
         "Unlock All",
-        "Ability Unlocks",
-        "Learned",
-        "Not Learned",
         "Battalion Edit",
         "Amount to 99",
         "Refill All Durability"}) {

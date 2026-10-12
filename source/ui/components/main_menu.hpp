@@ -36,8 +36,6 @@ protected:
       submenu_item<ItemTrainerGui>(model_, text(model_, "Item Trainer"));
     class_menu_ =
       submenu_item<ClassEditGui>(model_, text(model_, "Class Unlocks"));
-    ability_menu_ =
-      submenu_item<AbilityEditGui>(model_, text(model_, "Ability Unlocks"));
     support_menu_ =
       submenu_item<SupportGui>(model_, text(model_, "Support Edit"));
     battalion_menu_ =
@@ -45,7 +43,6 @@ protected:
     list->addItem(resources_menu_);
     list->addItem(item_menu_);
     list->addItem(class_menu_);
-    list->addItem(ability_menu_);
     list->addItem(support_menu_);
     list->addItem(battalion_menu_);
   }
@@ -57,7 +54,6 @@ private:
     resources_menu_->setText(text(model_, "Resources"));
     item_menu_->setText(text(model_, "Item Trainer"));
     class_menu_->setText(text(model_, "Class Unlocks"));
-    ability_menu_->setText(text(model_, "Ability Unlocks"));
     support_menu_->setText(text(model_, "Support Edit"));
     battalion_menu_->setText(text(model_, "Battalion Edit"));
   }
@@ -66,7 +62,6 @@ private:
   tsl::elm::ListItem* resources_menu_{};
   tsl::elm::ListItem* item_menu_{};
   tsl::elm::ListItem* class_menu_{};
-  tsl::elm::ListItem* ability_menu_{};
   tsl::elm::ListItem* support_menu_{};
   tsl::elm::ListItem* battalion_menu_{};
   std::chrono::steady_clock::time_point last_refresh_{};

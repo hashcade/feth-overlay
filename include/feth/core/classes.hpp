@@ -3,9 +3,12 @@
 
 #pragma once
 
-#include "feth/core/types.hpp"
+#include "feth/core/game_profile.hpp"
 
 namespace feth::core {
+
+constexpr ClassId DANCER_CLASS_ID = 43;
+void sync_dancer_ability(Character& character, bool unlocked);
 
 ClassUnlocks available_class_unlocks(CharacterId character);
 bool class_is_available(CharacterId character, ClassId classId);
