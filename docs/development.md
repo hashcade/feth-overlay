@@ -56,6 +56,7 @@ python3 scripts/export_names.py ../feth-save-editor
 python3 scripts/export_item_data.py ../feth-save-editor
 python3 scripts/export_battalions.py ../feth-save-editor
 python3 scripts/export_abilities.py ../feth-save-editor
+python3 scripts/export_classes.py ../feth-save-editor
 clang-format -i source/generated/*.cpp
 make -f Makefile.host test
 ```
@@ -68,6 +69,17 @@ Host checks cover language mapping, overrides, persistent mode values, and
 name lookup for every class and item category used by the overlay.
 
 ## Game data
+
+Class eligibility is exported by calling the save editor's `ClassEligibility`
+rules. `assets/class-eligibility.json` records the source revision, actual
+unit IDs, journal record IDs, and allowed classes. Unit IDs and journal
+records are different: playable Jeritza is unit 1045 / record 43, while
+unit 49 is an NPC variant. Pegasus Knight uses playable class 54, not 23;
+Death Knight is class 91 and is exclusive to playable Jeritza. The menu and
+bulk unlock share the same eligibility table, including Noble/Commoner,
+gender restrictions, exclusive classes, and White Heron Cup eligibility.
+Re-export after changing those rules in the editor. Bulk unlock only adds
+eligible flags; hidden or previously modified flags remain untouched.
 
 The memory profile targets only the v1.2.0 build ID. Item durability comes from
 the save editor's `fixed_data.bin.gz`; obtainable battalion templates come

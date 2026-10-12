@@ -15,6 +15,7 @@ constexpr const char* kMessages[][3] = {
   {"Apply Changes", "应用修改", "変更を適用"},
   {"Item Trainer", "物品编辑", "アイテム編集"},
   {"Class Unlocks", "兵种解锁", "兵種解放"},
+  {"Unlock All", "解锁全部", "すべて解放"},
   {"Ability Unlocks", "特技解锁", "スキル解放"},
   {"Learned", "已学会", "習得済み"},
   {"Not Learned", "未学会", "未習得"},

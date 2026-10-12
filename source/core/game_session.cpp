@@ -3,6 +3,7 @@
 
 #include "feth/core/game_session.hpp"
 #include "feth/core/catalog.hpp"
+#include "feth/core/classes.hpp"
 #include "feth/core/engine.hpp"
 #include "feth/core/game_profile.hpp"
 #include "feth/core/items.hpp"
@@ -300,7 +301,7 @@ std::list<core::RosterEntry> getRosterEntries() {
   for (auto& character : rosterCharacterArray) {
     auto foundCharacterName = UNIT_ID_NAME_MAP.find(character.id);
     if (foundCharacterName != end(UNIT_ID_NAME_MAP)) {
-      result.push_back({curIdx, foundCharacterName->second});
+      result.push_back({curIdx, foundCharacterName->second, character.id});
     }
     curIdx++;
   }
@@ -308,18 +309,8 @@ std::list<core::RosterEntry> getRosterEntries() {
   return result;
 }
 
-core::ClassUnlocks
-getRosterCharacterClassUnlockAtIndex(size_t rosterCharacterIndex) {
-  TRY_THROW(!gameIsRunning());
-
-  auto character = Character{};
-  TRY_THROW(dmntchtReadCheatProcessMemory(
-    s_processMetadata.main_nso_extents.base + ROSTER_OFFSET +
-      rosterCharacterIndex * sizeof(Character),
-    &character,
-    sizeof(character)
-  ));
-
+namespace {
+ClassUnlocks class_unlocks(const Character& character) {
   ClassUnlocks result{};
   for (size_t bit = 0; bit < CLASS_UNLOCK_BIT_FIELD_SIZE; ++bit) {
     result.baseClassUnlocks[bit] =
@@ -329,6 +320,17 @@ getRosterCharacterClassUnlockAtIndex(size_t rosterCharacterIndex) {
   }
   return result;
 }
+}  // namespace
+
+core::ClassUnlocks
+getRosterCharacterClassUnlockAtIndex(size_t rosterCharacterIndex) {
+  TRY_THROW(!gameIsRunning());
+  return class_unlocks(
+    read_game<Character>(
+      ROSTER_OFFSET + rosterCharacterIndex * sizeof(Character)
+    )
+  );
+}
 
 void setClassUnlockAtIndexOfRosterCharacterAtIndex(
   size_t rosterCharacterIndex, ClassId classId, bool isUnlocked
@@ -336,43 +338,46 @@ void setClassUnlockAtIndexOfRosterCharacterAtIndex(
   if (not gameIsRunning())
     return;
 
-  auto character = Character{};
-  TRY_THROW(dmntchtReadCheatProcessMemory(
-    s_processMetadata.main_nso_extents.base + ROSTER_OFFSET +
-      rosterCharacterIndex * sizeof(Character),
-    &character,
-    sizeof(character)
-  ));
-
-  if (
-    classId >= BASE_CLASS_ID_START and
-    classId < BASE_CLASS_ID_START + CLASS_UNLOCK_BIT_FIELD_SIZE
-  ) {
-    const auto bit = classId - BASE_CLASS_ID_START;
-    const auto mask = uint8_t{1} << (bit % 8);
-    auto& byte = character.classUnlocks[bit / 8];
-    byte = isUnlocked ? byte | mask : byte & ~mask;
-
-  } else if (
-    classId >= SPECIAL_CLASS_ID_START and
-    classId < SPECIAL_CLASS_ID_START + CLASS_UNLOCK_BIT_FIELD_SIZE
-  ) {
-    const auto bit = classId - SPECIAL_CLASS_ID_START;
-    const auto mask = uint8_t{1} << (bit % 8);
-    auto& byte = character.specialClassUnlocks[bit / 8];
-    byte = isUnlocked ? byte | mask : byte & ~mask;
-
-  } else {
-    // these probably aren't storable in characters
+  const auto offset = ROSTER_OFFSET + rosterCharacterIndex * sizeof(Character);
+  auto character = read_game<Character>(offset);
+  if (!class_is_available(character.id, classId))
     return;
-  }
 
-  TRY_THROW(dmntchtWriteCheatProcessMemory(
-    s_processMetadata.main_nso_extents.base + ROSTER_OFFSET +
-      rosterCharacterIndex * sizeof(Character),
-    &character,
-    sizeof(character)
-  ));
+  const bool special = classId >= SPECIAL_CLASS_ID_START;
+  const auto bit = special ? classId - SPECIAL_CLASS_ID_START : classId;
+  auto& flags =
+    special ? character.specialClassUnlocks : character.classUnlocks;
+  const auto mask = uint8_t{1} << (bit % 8);
+  auto& byte = flags[bit / 8];
+  byte = isUnlocked ? byte | mask : byte & ~mask;
+  write_game(
+    offset +
+      (special ? offsetof(Character, specialClassUnlocks)
+               : offsetof(Character, classUnlocks)) +
+      bit / 8,
+    byte
+  );
+}
+
+void unlockAvailableClasses(std::size_t index) {
+  TRY_THROW(!gameIsRunning());
+  const auto offset = ROSTER_OFFSET + index * sizeof(Character);
+  auto character = read_game<Character>(offset);
+  auto unlocks = class_unlocks(character);
+  unlock_available_classes(unlocks, character.id);
+  const auto base = unlocks.baseClassUnlocks.to_ullong();
+  const auto special = unlocks.specialClassUnlocks.to_ullong();
+  for (std::size_t byte = 0; byte < character.classUnlocks.size(); ++byte) {
+    character.classUnlocks[byte] = base >> (byte * 8);
+    character.specialClassUnlocks[byte] = special >> (byte * 8);
+  }
+  write_game(
+    offset + offsetof(Character, classUnlocks), character.classUnlocks
+  );
+  write_game(
+    offset + offsetof(Character, specialClassUnlocks),
+    character.specialClassUnlocks
+  );
 }
 
 core::SupportPoint getSupportPointAtIndex(size_t supportIndex) {

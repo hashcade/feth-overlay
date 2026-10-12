@@ -80,6 +80,7 @@ int main() {
         "Renown",
         "Apply Changes",
         "Class Unlocks",
+        "Unlock All",
         "Ability Unlocks",
         "Learned",
         "Not Learned",

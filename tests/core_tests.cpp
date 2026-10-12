@@ -2,6 +2,7 @@
 // Copyright (c) 2026 Jing Haihan
 
 #include "feth/core/catalog.hpp"
+#include "feth/core/classes.hpp"
 #include "feth/core/engine.hpp"
 #include "feth/core/game_profile.hpp"
 #include "feth/core/items.hpp"
@@ -202,6 +203,93 @@ int main() {
   assert(!classIsUnlocked(unlocks, 64));
   assert(classIsUnlocked(unlocks, 84));
   assert(!classIsUnlocked(unlocks, 85));
+
+  // Each playable character gets its original Noble/Commoner starting class.
+  const std::pair<CharacterId, ClassId> starting_classes[] = {
+    {0, 1},    {1, 1},    {2, 0},    {3, 0},    {4, 0},    {5, 0},    {6, 0},
+    {7, 0},    {8, 0},    {9, 0},    {10, 1},   {11, 1},   {12, 1},   {13, 0},
+    {14, 1},   {15, 0},   {16, 1},   {17, 0},   {18, 0},   {19, 0},   {20, 1},
+    {21, 1},   {22, 0},   {23, 0},   {24, 0},   {25, 1},   {26, 0},   {27, 0},
+    {28, 0},   {29, 1},   {30, 0},   {31, 0},   {32, 0},   {33, 1},   {34, 1},
+    {1040, 1}, {1041, 0}, {1042, 0}, {1043, 1}, {1045, 0}, {1046, 1},
+  };
+  const std::set<CharacterId> women{
+    1,  2,  9,  10, 11, 16, 17,   18,   22,   23,
+    24, 25, 27, 29, 32, 33, 1042, 1043, 1046,
+  };
+  for (const auto& [unit, starting] : starting_classes) {
+    assert(class_is_available(unit, starting));
+    assert(!class_is_available(unit, 1 - starting));
+    for (const auto kind : {13, 15, 18, 27, 29, 38})
+      assert(class_is_available(unit, kind) == !women.contains(unit));
+    for (const auto kind : {31, 39, 54, 86, 87})
+      assert(class_is_available(unit, kind) == women.contains(unit));
+    assert(
+      class_is_available(unit, 6) == (unit == 2 || unit == 3 || unit == 4)
+    );
+    for (const auto kind : {17, 58})
+      assert(class_is_available(unit, kind) == (unit == 4));
+    for (const auto kind : {40, 56})
+      assert(class_is_available(unit, kind) == (unit == 2));
+    for (const auto kind : {44, 57})
+      assert(class_is_available(unit, kind) == (unit == 3));
+    assert(class_is_available(unit, 42) == (unit == 0 || unit == 1));
+    assert(class_is_available(unit, 91) == (unit == 1045));
+    assert(
+      class_is_available(unit, 43) ==
+      ((unit >= 2 && unit <= 25) || unit == 27 ||
+       (unit >= 1040 && unit <= 1043))
+    );
+    for (const auto kind :
+         {23, 41, 45, 46, 47, 48, 49, 50, 51, 52, 53, 55, 59, 89})
+      assert(!class_is_available(unit, kind));
+
+    ClassUnlocks filled{};
+    // Preserve existing flags, even if they are hidden by the eligibility
+    // filter.
+    filled.baseClassUnlocks.set(60);
+    filled.specialClassUnlocks.set(5);
+    unlock_available_classes(filled, unit);
+    for (ClassId kind = 0; kind < 100; ++kind) {
+      const bool before = kind == 60 || kind == 89;
+      assert(
+        classIsUnlocked(filled, kind) ==
+        (before || class_is_available(unit, kind))
+      );
+      if (class_is_available(unit, kind)) {
+        bool listed{};
+        for (const auto& group : NAMED_CLASS_ID_LIST_LIST)
+          for (const auto& entry : group.list)
+            listed |= entry.id == kind;
+        assert(listed);
+      }
+    }
+    const auto filled_once = filled;
+    unlock_available_classes(filled, unit);
+    assert(filled.baseClassUnlocks == filled_once.baseClassUnlocks);
+    assert(filled.specialClassUnlocks == filled_once.specialClassUnlocks);
+  }
+  assert(
+    available_class_unlocks(0).baseClassUnlocks.count() +
+      available_class_unlocks(0).specialClassUnlocks.count() ==
+    37
+  );
+  assert(
+    available_class_unlocks(1).baseClassUnlocks.count() +
+      available_class_unlocks(1).specialClassUnlocks.count() ==
+    36
+  );
+  // NPC IDs must not be confused with playable DLC characters or record IDs.
+  for (const auto unit : {42, 43, 48, 49, 65535}) {
+    const auto available = available_class_unlocks(unit);
+    assert(
+      available.baseClassUnlocks.none() && available.specialClassUnlocks.none()
+    );
+    const auto before = unlocks;
+    unlock_available_classes(unlocks, unit);
+    assert(unlocks.baseClassUnlocks == before.baseClassUnlocks);
+    assert(unlocks.specialClassUnlocks == before.specialClassUnlocks);
+  }
 
   // Both character menus must refer to the same indexed support pair.
   const auto supports = getSupportCollection();

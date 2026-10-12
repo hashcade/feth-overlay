@@ -6,6 +6,7 @@
 
 #include "feth/app/model.hpp"
 #include "feth/core/catalog.hpp"
+#include "feth/core/classes.hpp"
 #include "feth/core/engine.hpp"
 #include "feth/core/game_session.hpp"
 #include "feth/core/items.hpp"
@@ -20,6 +21,7 @@
 #include <memory>
 #include <string>
 #include <utility>
+#include <vector>
 
 namespace {
 

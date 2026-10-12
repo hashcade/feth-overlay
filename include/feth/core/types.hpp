@@ -58,6 +58,7 @@ static constexpr auto SPECIAL_CLASS_ID_START = 84;
 struct RosterEntry {
   int index;
   std::string name;
+  CharacterId id{};
 };
 
 struct ClassUnlocks {

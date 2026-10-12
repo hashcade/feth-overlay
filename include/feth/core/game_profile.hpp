@@ -37,6 +37,7 @@ static_assert(sizeof(Character) == 0x24C);
 static_assert(offsetof(Character, equippedBattalion) == 0x18);
 static_assert(offsetof(Character, abilities) == 0x61);
 static_assert(offsetof(Character, classUnlocks) == 0xD3);
+static_assert(offsetof(Character, specialClassUnlocks) == 0xE3);
 using RosterCharacterArray = std::array<Character, ROSTER_CHARACTER_COUNT>;
 
 // offsets

@@ -19,7 +19,7 @@ Your language choice is remembered between sessions.
 | --- | --- |
 | Resources | Edit money and renown. |
 | Item Trainer | Restore normal durability, top up owned supplies, or fill a supply category to 99. |
-| Class Unlocks | Toggle unlocked classes for each roster character. |
+| Class Unlocks | Unlock individual classes or all eligible classes for a character, filtered by starting class, gender, and exclusive roles. |
 | Ability Unlocks | Learn or forget abilities for each roster character. |
 | Support Edit | Edit support points between characters. |
 | Battalion Edit | Edit type, level, and current endurance for owned battalions. |
@@ -37,6 +37,10 @@ Repeated clicks keep the quantity at 99:
 - Potions, exam seals, keys, stat boosters, forge materials, and gold bars.
 - Gifts (including flowers), tea, bait, seeds, and ingredients.
 - Trade Secret (Anna's quest item).
+
+**Class Unlocks** shows each character's eligible classes, including DLC
+classes. **Unlock All** unlocks the displayed classes immediately. Existing
+unlock flags are preserved; change classes from the game's own menus.
 
 Changing a battalion's type assigns its default gambit and restores its full
 endurance. Level can be adjusted from 1 to 5. Changing only type or endurance
@@ -92,7 +96,8 @@ Changes affect the running game; save in-game to keep them.
   language detection.
 - [jinghaihan/feth-save-editor](https://github.com/jinghaihan/feth-save-editor):
   the English, Simplified Chinese, and Japanese game names
-  exported from its game database, originally provided by imouto1994 and Falo.
+  exported from its game database, originally provided by imouto1994 and Falo,
+  and the per-character class eligibility rules.
 - [WerWolv/libtesla](https://github.com/WerWolv/libtesla): the original Tesla
   UI runtime.
 - [minazuki19/libtesla](https://github.com/minazuki19/libtesla): the libtesla

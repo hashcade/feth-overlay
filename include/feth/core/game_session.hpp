@@ -34,6 +34,7 @@ core::ClassUnlocks getRosterCharacterClassUnlockAtIndex(std::size_t index);
 void setClassUnlockAtIndexOfRosterCharacterAtIndex(
   std::size_t index, core::ClassId classId, bool unlocked
 );
+void unlockAvailableClasses(std::size_t index);
 core::SupportPoint getSupportPointAtIndex(std::size_t index);
 void setSupportPointAtIndex(std::size_t index, core::SupportPoint points);
 
