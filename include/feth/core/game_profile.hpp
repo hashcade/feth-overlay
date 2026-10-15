@@ -46,6 +46,13 @@ using RosterCharacterArray = std::array<Character, ROSTER_CHARACTER_COUNT>;
 static constexpr auto ITEM_OFFSET = 0x01B121A0;
 static constexpr auto ITEM_COUNT_OFFSET = ITEM_OFFSET + sizeof(ItemArray);
 static constexpr auto ROSTER_OFFSET = ITEM_COUNT_OFFSET + sizeof(ItemCount);
+static constexpr auto SAVE_POINTER_OFFSET = ITEM_OFFSET - 0x10;
+// v1.2.0: main+0x1AC3730 points to a manager with 105 unit pointers at +8.
+static constexpr auto BATTLE_MANAGER_POINTER_OFFSET = 0x01AC3730;
+static constexpr auto BATTLE_UNIT_COUNT = 105;
+static constexpr auto BATTLE_UNIT_FLAGS_OFFSET = 0xD6;
+static constexpr auto BATTLE_UNIT_INDEX_OFFSET = 0xF0;
+static constexpr auto BATTLE_UNIT_FACTION_OFFSET = 0x100;
 static constexpr auto SUPPORT_OFFSET = ITEM_OFFSET + 0x24280;
 // Player_V23.Money and Activities_V23.Reputation, verified against the editor
 // layouts and Gamerjin's v1.2.0 resource codes (see docs/development.md).

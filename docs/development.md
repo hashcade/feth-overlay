@@ -103,6 +103,19 @@ the save editor's `fixed_data.bin.gz`; obtainable battalion templates come
 from its `ObtainableBattalions.cs`. Re-export these catalogs when updating
 that data rather than editing generated C++ files.
 
+Durability refill follows the save pointer at `main + 0x1B12190`. During combat,
+it also follows the battle manager pointer at `main + 0x1AC3730`, whose 105
+unit pointers start at `+8`. These locations were checked against the v1.2.0
+NSO's relocations: GOT `0x1AA8078` resolves to `0x1AC3730`; `0x94E68` through
+`0x94E74` clears the pointer slots up to manager `+0x350`.
+Units share the six-item prefix with roster records. Refill requires an enabled
+unit (`+0xD6`, bit 0), matching slot index (`+0xF0`), player faction (`+0x100 == 0`),
+and a character ID (`+0x24`) present in the roster. The manager and save pointers
+are checked again before writing, each item is rechecked before its edit, and
+only its durability byte (`+2`) is written and verified. Host memory-fixture
+checks cover combat copies, enemy/NPC exclusions, bounds, stale pointers, and
+failed readback. Hardware testing is still required for the running-game path.
+
 Supply categories live in `source/core/catalog.cpp`. Convoy categories use
 item IDs; storehouse categories use indices into `Player_V23.MiscItems`
 (223 byte counts at `0x13B1`) or `GiftItems` (225 byte counts at `0x1490`).

@@ -23,8 +23,10 @@ Your language choice is remembered between sessions.
 | Support Edit | Change support ranks within each pair's limits, or max all supports for a character. |
 | Battalion Edit | Refill endurance, max levels, or add missing battalion types. |
 
-**Refill All Durability** restores Convoy and character-held items to each
-item's normal maximum durability.
+**Refill All Durability** restores Convoy, character-held, and active player
+battle-unit items to each item's normal maximum durability. Enemy and allied
+NPC inventories are unchanged. Writes are checked by reading the durability
+back from game memory.
 
 **Amount to 99** tops up owned supplies in the categories below. Missing items
 stay missing, and zero quantities stay zero. Weapons, equipment, lost items,

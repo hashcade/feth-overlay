@@ -4,6 +4,7 @@
 #include "feth/core/game_session.hpp"
 #include "feth/core/catalog.hpp"
 #include "feth/core/classes.hpp"
+#include "feth/core/durability_session.hpp"
 #include "feth/core/engine.hpp"
 #include "feth/core/game_profile.hpp"
 #include "feth/core/items.hpp"
@@ -93,36 +94,20 @@ Locale detect_locale() {
 
 void refillItemDurability() {
   if (!gameIsRunning())
-    return;
-  ItemArray items{};
-  ItemCount count{};
-  const auto base = s_processMetadata.main_nso_extents.base;
-  TRY_THROW(
-    dmntchtReadCheatProcessMemory(base + ITEM_OFFSET, &items, sizeof(items))
-  );
-  TRY_THROW(dmntchtReadCheatProcessMemory(
-    base + ITEM_COUNT_OFFSET, &count, sizeof(count)
-  ));
-  if (refill_items(std::span(items).first(count))) {
-    TRY_THROW(
-      dmntchtWriteCheatProcessMemory(base + ITEM_OFFSET, &items, sizeof(items))
-    );
-  }
-
-  RosterCharacterArray roster{};
-  TRY_THROW(
-    dmntchtReadCheatProcessMemory(base + ROSTER_OFFSET, &roster, sizeof(roster))
-  );
-  for (std::size_t index = 0; index < roster.size(); ++index) {
-    auto held_items = roster[index].heldItems;
-    if (refill_items(held_items)) {
-      TRY_THROW(dmntchtWriteCheatProcessMemory(
-        base + ROSTER_OFFSET + index * sizeof(Character),
-        &held_items,
-        sizeof(held_items)
-      ));
-    }
-  }
+    throw std::runtime_error("Start Three Houses v1.2.0");
+  const ProcessMemory memory{
+    [](std::uint64_t address, std::span<std::byte> bytes) {
+      TRY_THROW(
+        dmntchtReadCheatProcessMemory(address, bytes.data(), bytes.size())
+      );
+    },
+    [](std::uint64_t address, std::span<const std::byte> bytes) {
+      TRY_THROW(
+        dmntchtWriteCheatProcessMemory(address, bytes.data(), bytes.size())
+      );
+    },
+  };
+  refill_item_durability(memory, s_processMetadata.main_nso_extents.base);
 }
 
 namespace {
