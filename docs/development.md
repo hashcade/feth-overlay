@@ -81,6 +81,9 @@ before freeing its aligned buffer. Missing files, disabled audio, unsupported
 WAVs, and unavailable audio services fall back to a two-second **Done** value.
 The WAV parser accepts short 8/16-bit PCM mono/stereo packs at 8–48 kHz and
 converts them to 48 kHz stereo. Failure details reuse the subtitle area.
+The shared action-feedback policy matches MHGU Overlay: a result is consumed
+once, only success requests confirmation audio, and silent completion expires
+after two seconds. Opening a menu never replays a previous success.
 
 ## Game data
 

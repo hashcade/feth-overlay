@@ -214,11 +214,13 @@ public:
   bool onClick(u64 keys) override {
     if ((keys & HidNpadButton_A) == 0)
       return false;
+    feedback_.begin();
     if (!model_.apply(action_)) {
+      feedback_.observe(core::ActionStatus::Failed);
       setValue(text(model_, "Failed"));
-      expires_ = {};
       return true;
     }
+    feedback_.observe(core::ActionStatus::Completed);
     const auto setting = parseValueFromIniSection(
       "sdmc:/config/ultrahand/config.ini", "ultrahand", "sound_effects"
     );
@@ -231,25 +233,30 @@ public:
       // failure.
     }
     setValue(played ? "" : text(model_, "Done"));
-    expires_ = std::chrono::steady_clock::now() + std::chrono::seconds(2);
+    feedback_.confirmation(played, now_ms());
     return true;
   }
 
   void draw(tsl::gfx::Renderer* renderer) override {
     if (
-      expires_ != std::chrono::steady_clock::time_point{} &&
-      std::chrono::steady_clock::now() >= expires_
+      feedback_.status() == core::ActionStatus::Completed &&
+      !feedback_.show_done(now_ms())
     ) {
       setValue("");
-      expires_ = {};
     }
     ListItem::draw(renderer);
   }
 
 private:
+  static std::uint64_t now_ms() {
+    return std::chrono::duration_cast<std::chrono::milliseconds>(
+             std::chrono::steady_clock::now().time_since_epoch()
+    )
+      .count();
+  }
   Model& model_;
   std::function<void()> action_;
-  std::chrono::steady_clock::time_point expires_{};
+  core::ActionFeedback feedback_;
 };
 
 tsl::elm::ListItem* action_item(

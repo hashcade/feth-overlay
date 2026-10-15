@@ -6,6 +6,7 @@
 
 #include "feedback_audio.hpp"
 #include "feth/app/model.hpp"
+#include "feth/core/action_feedback.hpp"
 #include "feth/core/catalog.hpp"
 #include "feth/core/classes.hpp"
 #include "feth/core/engine.hpp"
