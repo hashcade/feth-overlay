@@ -10,11 +10,16 @@ LOCALIZATION_SOURCES := source/core/locale.cpp source/core/messages.cpp source/g
 
 .PHONY: test clean-host
 
-test: $(HOST_BUILD)/core-tests $(HOST_BUILD)/localization-tests $(HOST_BUILD)/model-tests $(HOST_BUILD)/durability-session-tests
+test: $(HOST_BUILD)/core-tests $(HOST_BUILD)/localization-tests $(HOST_BUILD)/model-tests $(HOST_BUILD)/durability-session-tests $(HOST_BUILD)/sound-tests
 	@$(HOST_BUILD)/core-tests
 	@$(HOST_BUILD)/localization-tests
 	@$(HOST_BUILD)/model-tests
 	@$(HOST_BUILD)/durability-session-tests
+	@$(HOST_BUILD)/sound-tests
+
+$(HOST_BUILD)/sound-tests: source/core/sound.cpp tests/sound_tests.cpp include/feth/core/sound.hpp
+	@mkdir -p $(HOST_BUILD)
+	$(CXX) $(CXXFLAGS) -Iinclude source/core/sound.cpp tests/sound_tests.cpp -o $@
 
 $(HOST_BUILD)/durability-session-tests: source/core/durability_session.cpp source/generated/item_data.cpp tests/durability_session_tests.cpp $(wildcard include/feth/core/*.hpp)
 	@mkdir -p $(HOST_BUILD)

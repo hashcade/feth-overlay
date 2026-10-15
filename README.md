@@ -57,6 +57,12 @@ pair's maximum. Support conversations still follow the game's progression.
 
 Changes affect the running game; save in-game to keep them.
 
+Successful one-shot actions play Ultrahand's installed confirmation sound from
+`sdmc:/config/ultrahand/sounds/enter.wav`, respecting its `sound_effects` setting.
+No sound files are included or installed. When sound is disabled or unavailable,
+the selected action briefly shows **Done** instead. Failures show **Failed** and
+the reason below the overlay title, without opening a dialog.
+
 ## Requirements
 
 - Fire Emblem: Three Houses v1.2.0

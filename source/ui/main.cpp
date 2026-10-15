@@ -4,6 +4,7 @@
 #define TESLA_INIT_IMPL
 #include <tesla.hpp>
 
+#include "feedback_audio.hpp"
 #include "feth/app/model.hpp"
 #include "feth/core/catalog.hpp"
 #include "feth/core/classes.hpp"
@@ -56,7 +57,12 @@ public:
   }
 
   void exitServices() override {
+    feth::ui::stop_feedback_audio();
     model_.stop();
+  }
+
+  void onHide() override {
+    feth::ui::stop_feedback_audio();
   }
 
   void onShow() override {

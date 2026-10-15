@@ -19,6 +19,7 @@ public:
   void showError(const std::string& message);
 
   std::string status() const;
+  bool failed() const;
   std::string game_version() const;
   core::Locale display_locale() const;
   core::LocaleMode language_mode() const;

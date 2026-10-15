@@ -63,9 +63,13 @@ void Model::showError(const std::string& message) {
 std::string Model::status() const {
   auto result = core::ui_text(status_, display_locale());
   if (!error_.empty()) {
-    result += ": " + error_;
+    result += ": " + core::ui_text(error_, display_locale());
   }
   return result;
+}
+
+bool Model::failed() const {
+  return !status_.empty() && status_ != "Changes applied";
 }
 
 std::string Model::game_version() const {

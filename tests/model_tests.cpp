@@ -33,6 +33,7 @@ int main() {
   model.start();
   assert(model.display_locale() == feth::core::Locale::SimplifiedChinese);
   assert(model.status() == "请启动风花雪月 v1.2.0");
+  assert(model.failed());
   assert(model.game_version().empty());
   bool called{};
   assert(!model.apply([&] { called = true; }));
@@ -41,16 +42,23 @@ int main() {
   running = true;
   assert(model.apply([&] { called = true; }));
   assert(called && model.status() == "修改已应用");
+  assert(!model.failed());
   model.cycle_language();
   assert(model.display_locale() == feth::core::Locale::English);
   assert(model.status() == "Changes applied");
   model.set_language(feth::core::LocaleMode::Japanese);
   assert(!model.apply([] { throw std::runtime_error("0x1234"); }));
   assert(model.status() == "失敗: 0x1234");
+  assert(model.failed());
   model.set_language(feth::core::LocaleMode::Auto);
   assert(model.status() == "失败: 0x1234");
   assert(model.refresh());
   assert(model.status().empty());
+  assert(!model.failed());
+  assert(!model.apply([] {
+    throw std::runtime_error("Durability verification failed");
+  }));
+  assert(model.status() == "失败: 耐久写入验证失败");
   assert(model.game_version() == "风花雪月 v1.2.0");
   model.stop();
   assert(stopped);

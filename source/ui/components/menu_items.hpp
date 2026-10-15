@@ -53,8 +53,9 @@ public:
     renderer->drawString(
       m_title.c_str(), false, 20, 50, 30, {0xF, 0xF, 0xF, 0xF}
     );
+    const auto subtitle = model_.failed() ? model_.status() : m_subtitle;
     renderer->drawString(
-      m_subtitle.c_str(), false, 20, 70, 15, {0xC, 0xC, 0xC, 0xF}
+      subtitle.c_str(), false, 20, 70, 15, {0xC, 0xC, 0xC, 0xF}
     );
 
     if (FullMode) {
@@ -203,19 +204,58 @@ numeric_item(const std::string& label, int& value, NumericOptions options) {
   return new NumericListItem(label, value, options);
 }
 
+class ActionListItem final : public tsl::elm::ListItem {
+public:
+  ActionListItem(Model& model, std::string label, std::function<void()> action)
+    : ListItem(std::move(label)),
+      model_(model),
+      action_(std::move(action)) {}
+
+  bool onClick(u64 keys) override {
+    if ((keys & HidNpadButton_A) == 0)
+      return false;
+    if (!model_.apply(action_)) {
+      setValue(text(model_, "Failed"));
+      expires_ = {};
+      return true;
+    }
+    const auto setting = parseValueFromIniSection(
+      "sdmc:/config/ultrahand/config.ini", "ultrahand", "sound_effects"
+    );
+    const bool enabled = setting != "false" && setting != "0";
+    bool played{};
+    try {
+      played = feth::ui::play_confirmation_sound(enabled);
+    } catch (const std::exception&) {
+      // A missing/unsupported sound must never turn a successful edit into a
+      // failure.
+    }
+    setValue(played ? "" : text(model_, "Done"));
+    expires_ = std::chrono::steady_clock::now() + std::chrono::seconds(2);
+    return true;
+  }
+
+  void draw(tsl::gfx::Renderer* renderer) override {
+    if (
+      expires_ != std::chrono::steady_clock::time_point{} &&
+      std::chrono::steady_clock::now() >= expires_
+    ) {
+      setValue("");
+      expires_ = {};
+    }
+    ListItem::draw(renderer);
+  }
+
+private:
+  Model& model_;
+  std::function<void()> action_;
+  std::chrono::steady_clock::time_point expires_{};
+};
+
 tsl::elm::ListItem* action_item(
   Model& model, const std::string& label, std::function<void()> action
 ) {
-  auto* item = new tsl::elm::ListItem(label);
-  item->setClickListener([model_ptr = &model,
-                          action = std::move(action)](u64 keys) {
-    if ((keys & HidNpadButton_A) == 0) {
-      return false;
-    }
-    model_ptr->apply(action);
-    return true;
-  });
-  return item;
+  return new ActionListItem(model, label, std::move(action));
 }
 
 void category_header(tsl::elm::List* list, std::string title) {

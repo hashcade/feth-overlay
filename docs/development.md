@@ -72,6 +72,16 @@ modifying the dependency checkout.
 Host checks cover language mapping, overrides, persistent mode values, and
 name lookup for every class and item category used by the overlay.
 
+One-shot action feedback reuses the active Ultrahand sound pack's `enter.wav`
+and `[ultrahand] sound_effects` from `sdmc:/config/ultrahand/config.ini`.
+The existing libtesla dependency has no audio helper, so a small optional
+`audout` adapter submits that file without changing UI runtimes or bundling
+assets. Playback is asynchronous. Hiding/exiting the overlay stops playback
+before freeing its aligned buffer. Missing files, disabled audio, unsupported
+WAVs, and unavailable audio services fall back to a two-second **Done** value.
+The WAV parser accepts short 8/16-bit PCM mono/stereo packs at 8–48 kHz and
+converts them to 48 kHz stereo. Failure details reuse the subtitle area.
+
 ## Game data
 
 Class eligibility is exported by calling the save editor's `ClassEligibility`
